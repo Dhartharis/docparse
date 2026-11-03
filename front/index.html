@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/assets/docparse-mark.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#050506" />
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="canonical" href="https://docparse.fyr-studio.com/" />
+    <title>DocParse</title>
+    <style>
+      html[data-docparse-entry="pending"]::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background: #ffdb38;
+        z-index: 1000;
+        pointer-events: none;
+        animation: entry-cover-timeout 0s 4s forwards;
+      }
+      @keyframes entry-cover-timeout {
+        to {
+          visibility: hidden;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        html[data-docparse-entry="pending"]::before {
+          display: none;
+        }
+      }
+    </style>
+    <script>
+      // Continue the portal's final yellow frame before the app's first paint.
+      if (
+        new URLSearchParams(location.search).get("entry") === "fyr-portal" &&
+        !["reload", "back_forward"].includes(
+          performance.getEntriesByType("navigation")[0]?.type,
+        ) &&
+        !matchMedia("(prefers-reduced-motion: reduce)").matches
+      ) {
+        document.documentElement.dataset.docparseEntry = "pending";
+        setTimeout(() => {
+          delete document.documentElement.dataset.docparseEntry;
+        }, 4000);
+      }
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

@@ -1,0 +1,9 @@
+{
+  "locale": "en",
+  "version": 1,
+  "strings": {
+    "doc.category": "Web · Document assistant",
+    "doc.description": "Chat with your documents and find answers in their content.",
+    "footer.copyright": "© {year} Fyr Studio"
+  }
+}

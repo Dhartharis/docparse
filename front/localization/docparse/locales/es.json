@@ -1,0 +1,28 @@
+{
+  "locale": "es",
+  "version": 1,
+  "strings": {
+    "login.page_title": "Iniciar sesión · DocParse",
+    "language.label": "Idioma",
+    "studio.back": "Volver a Fyr Studio",
+    "intro.documents": "Documentos",
+    "intro.knowledge": "Conocimiento",
+    "intro.conversation": "Conversación",
+    "login.welcome": "Te damos la bienvenida a DocParse",
+    "login.greeting": "Qué bueno verte.",
+    "login.description": "Accede a tu espacio de trabajo.",
+    "login.username": "Usuario",
+    "login.username_placeholder": "Tu nombre de usuario",
+    "login.password": "Contraseña",
+    "login.password_placeholder": "Tu contraseña",
+    "login.show_password": "Mostrar contraseña",
+    "login.hide_password": "Ocultar contraseña",
+    "login.submit": "Iniciar sesión",
+    "login.preview": "Vista previa · El acceso aún no está conectado.",
+    "login.unavailable": "El acceso aún no está disponible. Tus credenciales no se han enviado ni guardado.",
+    "login.username_required": "Introduce tu nombre de usuario.",
+    "login.password_required": "Introduce tu contraseña.",
+    "login.access_hint": "Usa la cuenta que te proporcionó tu organización.",
+    "footer.signature": "Un producto de Fyr Studio"
+  }
+}

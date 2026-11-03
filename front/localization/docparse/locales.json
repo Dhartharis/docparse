@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "refreshPolicy": {
+    "maxAgeHours": 168
+  },
+  "locales": [
+    {
+      "code": "en",
+      "displayName": "English",
+      "flagCode": "gb",
+      "version": 1
+    },
+    {
+      "code": "es",
+      "displayName": "Español",
+      "flagCode": "es",
+      "version": 1
+    },
+    {
+      "code": "vi",
+      "displayName": "Tiếng Việt",
+      "flagCode": "vn",
+      "version": 1
+    }
+  ]
+}

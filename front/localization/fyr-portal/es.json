@@ -1,0 +1,9 @@
+{
+  "locale": "es",
+  "version": 1,
+  "strings": {
+    "doc.category": "Web · Asistente documental",
+    "doc.description": "Conversa con tus documentos y encuentra respuestas en su contenido.",
+    "footer.copyright": "© {year} Fyr Studio"
+  }
+}
