@@ -1,0 +1,9 @@
+{
+  "locale": "vi",
+  "version": 1,
+  "strings": {
+    "doc.category": "Web · Trợ lý tài liệu",
+    "doc.description": "Trò chuyện với tài liệu của bạn và tìm câu trả lời từ nội dung.",
+    "footer.copyright": "© {year} Fyr Studio"
+  }
+}

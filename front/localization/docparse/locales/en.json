@@ -1,0 +1,28 @@
+{
+  "locale": "en",
+  "version": 1,
+  "strings": {
+    "login.page_title": "Sign in · DocParse",
+    "language.label": "Language",
+    "studio.back": "Back to Fyr Studio",
+    "intro.documents": "Documents",
+    "intro.knowledge": "Knowledge",
+    "intro.conversation": "Conversation",
+    "login.welcome": "Welcome to DocParse",
+    "login.greeting": "Good to see you.",
+    "login.description": "Sign in to your workspace.",
+    "login.username": "Username",
+    "login.username_placeholder": "Your username",
+    "login.password": "Password",
+    "login.password_placeholder": "Your password",
+    "login.show_password": "Show password",
+    "login.hide_password": "Hide password",
+    "login.submit": "Sign in",
+    "login.preview": "Interface preview · Sign-in is not connected yet.",
+    "login.unavailable": "Sign-in is not available yet. Your credentials have not been sent or saved.",
+    "login.username_required": "Enter your username.",
+    "login.password_required": "Enter your password.",
+    "login.access_hint": "Use the account provided by your organization.",
+    "footer.signature": "A Fyr Studio product"
+  }
+}

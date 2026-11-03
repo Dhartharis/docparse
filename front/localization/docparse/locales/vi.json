@@ -1,0 +1,28 @@
+{
+  "locale": "vi",
+  "version": 1,
+  "strings": {
+    "login.page_title": "Đăng nhập · DocParse",
+    "language.label": "Ngôn ngữ",
+    "studio.back": "Quay lại Fyr Studio",
+    "intro.documents": "Tài liệu",
+    "intro.knowledge": "Kiến thức",
+    "intro.conversation": "Trò chuyện",
+    "login.welcome": "Chào mừng đến với DocParse",
+    "login.greeting": "Rất vui được gặp bạn.",
+    "login.description": "Đăng nhập vào không gian làm việc của bạn.",
+    "login.username": "Tên đăng nhập",
+    "login.username_placeholder": "Tên đăng nhập của bạn",
+    "login.password": "Mật khẩu",
+    "login.password_placeholder": "Mật khẩu của bạn",
+    "login.show_password": "Hiện mật khẩu",
+    "login.hide_password": "Ẩn mật khẩu",
+    "login.submit": "Đăng nhập",
+    "login.preview": "Bản xem trước · Chức năng đăng nhập chưa được kết nối.",
+    "login.unavailable": "Chức năng đăng nhập chưa khả dụng. Thông tin đăng nhập của bạn chưa được gửi hoặc lưu.",
+    "login.username_required": "Nhập tên đăng nhập của bạn.",
+    "login.password_required": "Nhập mật khẩu của bạn.",
+    "login.access_hint": "Sử dụng tài khoản do tổ chức của bạn cung cấp.",
+    "footer.signature": "Một sản phẩm của Fyr Studio"
+  }
+}

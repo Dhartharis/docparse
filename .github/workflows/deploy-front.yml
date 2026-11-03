@@ -1,0 +1,57 @@
+name: Deploy DocParse frontend
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'front/**'
+      - '.github/workflows/deploy-front.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'front/**'
+      - '.github/workflows/deploy-front.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: docparse-front-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate-and-deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: front
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: front/package-lock.json
+      - name: Install dependencies
+        run: npm ci
+      - name: Lint
+        run: npm run lint
+      - name: Build and validate bundled translations
+        run: npm run build
+      - name: Install browser for tests
+        run: npx playwright install --with-deps chromium
+      - name: Test login, localization and portal entry
+        run: npm test
+      - name: Deploy frontend to Azure Static Web Apps
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_DOCPARSE }}
+          action: upload
+          app_location: front/dist
+          skip_app_build: true
+          api_location: ''
+          skip_api_build: true
+          output_location: ''

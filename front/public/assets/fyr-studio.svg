@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512"><title>Fyr Studio compact neon lighthouse</title>
+<defs>
+<filter id="purple-glow" x="-50%" y="-50%" width="200%" height="200%" color-interpolation-filters="sRGB"><feGaussianBlur in="SourceAlpha" stdDeviation="5" result="blur"/><feFlood flood-color="#7825d4"/><feComposite in2="blur" operator="in" result="outer"/><feGaussianBlur in="SourceAlpha" stdDeviation="2" result="tight"/><feFlood flood-color="#a743ff"/><feComposite in2="tight" operator="in" result="inner"/><feMerge><feMergeNode in="outer"/><feMergeNode in="inner"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+<filter id="white-glow" x="-50%" y="-50%" width="200%" height="200%" color-interpolation-filters="sRGB"><feGaussianBlur stdDeviation="3" result="soft"/><feMerge><feMergeNode in="soft"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs><style>.purple-neon{stroke:#b77aef;filter:drop-shadow(0 0 2px #9639eb) drop-shadow(0 0 5px #6420b5)}</style>
+<rect width="512" height="512" rx="112" fill="#000"/>
+<g fill="none" stroke-linecap="round" stroke-linejoin="round">
+<path class="purple-neon" stroke-width="7" d="M197 191V134H176Q199 77 256 77Q313 77 336 134H315V191H328V218H184V191ZM202 219L184 396M310 219L328 396M145 425H226Q274 425 274 391Q274 375 257 375Q241 375 241 391V408L214 400Q175 388 159 425"/>
+<path stroke="#ffffff" stroke-width="6" filter="url(#white-glow)" d="M202 126Q256 68 310 126M310 240C297 290 206 299 195 338M315 310C294 358 203 357 190 389M286 409Q328 387 356 425M285 425H367"/>
+<path fill="#ffffff" stroke="#ffffff" stroke-width="3.5" filter="url(#white-glow)" d="M256 139L262 158L276 150L267 164L284 170L267 176L276 190L262 182L256 201L250 182L236 190L245 176L228 170L245 164L236 150L250 158Z"/>
+</g></svg>
