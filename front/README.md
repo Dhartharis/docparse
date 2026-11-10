@@ -4,7 +4,7 @@ React + TypeScript + Vite client. Features are delivered vertically across datab
 
 ## Run locally
 
-The recommended complete local environment is Docker Compose from the repository root: `docker compose up --build`. This runs the frontend, API, PostgreSQL/pgvector, and Azurite together without publishing to Azure. See the [repository setup](../README.md#local-development-with-docker).
+The recommended complete local environment is Docker Compose from the repository root. Complete the [initial setup](../README.md#local-development-with-docker) first, including the sibling Fyr Usage checkout, local signing key, frontend build and Ollama models. For subsequent starts, use `docker compose up -d`. This runs the frontend, API, PostgreSQL/pgvector, Azurite, Mailpit, Ollama and Fyr Usage without publishing to Azure.
 
 For frontend-only work, a Node version supported by Vite (developed with Node 24) is required:
 
@@ -32,7 +32,7 @@ Browser tests cover required-field validation, keyboard interaction, password vi
 - Visual reference: `C:\Proyectos\fyr-portal\DESIGN.md` and its current template. Product and studio SVG assets were copied unchanged from that repository; gold remains the product mark, violet the interaction accent.
 - Target application URL: `https://docparse.fyr-studio.com/`, per the current instruction. The product document and portal now use this domain.
 - English is the complete bundled fallback; Spanish and Vietnamese are also bundled. Only the explicit language preference and validated public translation packs are persisted. Credentials are submitted only to the local authentication API and are never persisted in browser storage. Access/refresh tokens stay in memory; reloading or closing the page requires signing in again. Refresh runs automatically while the page remains open.
-- Invitation-gated registration, confirmation resend, username/email login, password recovery/reset, organization creation and invitation acceptance use real backend endpoints. An Admin invites the email and role through Manage team; the recipient chooses their own username/password. Account and organization roles come from the server. Viewers see only assigned bots; chat renders answers and source filenames. Ordinary logout clears the current browser session; logout everywhere revokes all sessions through the API.
+- Public owner registration creates a new business without an invitation and requires email confirmation before login. Joining an existing business requires an Admin invitation; the recipient chooses credentials or accepts with an existing verified account. Confirmation resend, username/email login, password recovery/reset and organization creation use real backend endpoints. Account and organization roles come from the server. Viewers see only assigned bots; chat renders answers and source filenames. Ordinary logout clears the current browser session; logout everywhere revokes all sessions through the API.
 
 ## Feature structure and local review
 
@@ -54,7 +54,7 @@ Knowledge administration is connected to PostgreSQL-backed endpoints and local B
 
 The Docker-local API now uses Ollama models and requires no cloud key. Base creation, browsing and existing downloads require no AI call. Local extraction reads PDF pages or OCRs images/scanned pages; embeddings and answers run in Ollama. A paid provider requires its metering adapter to be implemented and validated before enabling it with accounting. No key was added and no paid call was made during this feature. The UI reports processing unavailability instead of a generic server error. Automated tests use a local provider double and dummy key, never a live provider.
 
-Docker-local uploads use synchronous PDF/OCR reading and page chunks (PDF/PNG/JPEG, 10 MiB). The optional old OpenAI adapter still uses structured fields. The UI waits for completion; it does not fabricate queued/ready states or progress percentages. It refreshes the list after an upload error and never automatically retries processing. A timeout/uncertain commit can still require checking the list before manual re-upload. General text/chunk ingestion, durable jobs/idempotency, deletion/retention and production lifecycle remain backend work. Excel export stays out of the UI until the existing EPPlus licensing decision is resolved.
+Docker-local uploads accept PDF/PNG/JPEG originals up to 10 MiB and return HTTP 202 after durable acceptance. Background workers extract page text/OCR and embeddings; the UI polls queued/processing/ready/failed states while users continue editing. SHA-256 deduplicates active documents within a base; failed processing supports explicit Retry using the stored original. A timeout/uncertain acceptance requires checking the list before manual re-upload. Account → Trash supports 30-day restoration, with durable cleanup after expiration. Only ready documents can be searched or exported. CSV and original downloads are connected; Excel export stays out of the UI until the EPPlus licensing decision is resolved.
 
 `npm run build` writes static files to `front/dist`. Production API routing, HTTPS/origins and identity remain separate deployment work. Builds do not publish anything.
 
