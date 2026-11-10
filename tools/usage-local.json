@@ -1,0 +1,53 @@
+{
+  "description": "Local simulation only. These values are NOT commercial prices or actual Ollama charges. All credits are calculated by Fyr Usage.",
+  "plans": [
+    {
+      "key": "free",
+      "includedMicrocredits": "1000000000",
+      "creditValueNanoUsd": "1000",
+      "costFractionPpm": 400000,
+      "allowOverage": false,
+      "simulation": true
+    },
+    {
+      "key": "starter",
+      "includedMicrocredits": "10000000000",
+      "creditValueNanoUsd": "1000",
+      "costFractionPpm": 400000,
+      "allowOverage": false,
+      "simulation": true
+    },
+    {
+      "key": "pro",
+      "includedMicrocredits": "100000000000",
+      "creditValueNanoUsd": "1000",
+      "costFractionPpm": 400000,
+      "allowOverage": false,
+      "simulation": true
+    },
+    {
+      "key": "unlimited",
+      "includedMicrocredits": "100000000000",
+      "creditValueNanoUsd": "1000",
+      "costFractionPpm": 400000,
+      "allowOverage": true,
+      "simulation": true
+    }
+  ],
+  "rates": [
+    {
+      "provider": "ollama",
+      "model": "qwen3:4b-instruct",
+      "inputNanoUsd": "1",
+      "outputNanoUsd": "1",
+      "simulation": true
+    },
+    {
+      "provider": "ollama",
+      "model": "qwen3-embedding:0.6b",
+      "inputNanoUsd": "1",
+      "outputNanoUsd": "0",
+      "simulation": true
+    }
+  ]
+}

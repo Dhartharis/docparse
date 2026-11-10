@@ -6,9 +6,12 @@ test.beforeEach(async ({ context }) => {
   await context.route("**/localization-api/**", (route) => route.abort());
 });
 
-test("validates credentials, supports keyboard, and never sends a preview login", async ({
+test("validates credentials, supports keyboard, sends login and never stores credentials", async ({
   page,
 }) => {
+  await page.route("**/api/auth/login", (route) =>
+    route.fulfill({ status: 401, json: {} }),
+  );
   const requests: string[] = [];
   page.on("request", (request) => {
     if (
@@ -19,17 +22,27 @@ test("validates credentials, supports keyboard, and never sends a preview login"
   });
   await page.goto("/");
   await page.getByRole("button", { name: "Sign in", exact: true }).click();
-  await expect(page.getByLabel("Username", { exact: true })).toBeFocused();
   await expect(
-    page.getByText("Enter your username.", { exact: true }),
+    page.getByLabel(/^(Email address|Username or email)$/, { exact: true }),
+  ).toBeFocused();
+  await expect(
+    page.getByText("Enter your username or email.", { exact: true }),
   ).toBeVisible();
-  await page.getByLabel("Username", { exact: true }).fill("preview-user");
+  await page
+    .getByLabel(/^(Email address|Username or email)$/, { exact: true })
+    .fill("member@example.test");
   await page.getByRole("button", { name: "Sign in", exact: true }).click();
   await expect(page.getByLabel("Password", { exact: true })).toBeFocused();
   await expect(
     page.getByText("Enter your password.", { exact: true }),
   ).toBeVisible();
-  await page.getByLabel("Username", { exact: true }).focus();
+  await page
+    .getByLabel(/^(Email address|Username or email)$/, { exact: true })
+    .focus();
+  await page.keyboard.press("Tab");
+  await expect(
+    page.getByRole("button", { name: "Forgot password?", exact: true }),
+  ).toBeFocused();
   await page.keyboard.press("Tab");
   await expect(page.getByLabel("Password", { exact: true })).toBeFocused();
   await page.keyboard.type("preview-only-password");
@@ -49,10 +62,10 @@ test("validates credentials, supports keyboard, and never sends a preview login"
   );
   await page.keyboard.press("Tab");
   await page.keyboard.press("Enter");
-  await expect(page.getByRole("status")).toContainText(
-    "Your credentials have not been sent or saved.",
+  await expect(page.getByRole("alert")).toContainText(
+    "Check your username or email and password.",
   );
-  expect(requests).toEqual([]);
+  expect(requests).toEqual(["http://127.0.0.1:45173/api/auth/login"]);
   expect(await page.evaluate(() => ({ ...localStorage }))).toEqual({});
 });
 

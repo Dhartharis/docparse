@@ -1,0 +1,33 @@
+@DocParse_HostAddress = http://127.0.0.1:5128
+@accessToken = paste-local-access-token-here
+
+GET {{DocParse_HostAddress}}/health
+
+### Register/confirm email using the local inbox at http://127.0.0.1:8025.
+POST {{DocParse_HostAddress}}/api/auth/register
+Content-Type: application/json
+
+{
+  "email": "replace-with-your-local-test-email@example.test",
+  "password": "replace-with-a-unique-local-password!A1"
+}
+
+### Login after email confirmation. Copy the accessToken into the variable above.
+POST {{DocParse_HostAddress}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "replace-with-your-local-test-email@example.test",
+  "password": "replace-with-a-unique-local-password!A1"
+}
+
+### Trusted membership roles
+GET {{DocParse_HostAddress}}/api/organizations/
+Authorization: Bearer {{accessToken}}
+
+### Explicitly revoke all sessions
+POST {{DocParse_HostAddress}}/api/auth/logout-all
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{}

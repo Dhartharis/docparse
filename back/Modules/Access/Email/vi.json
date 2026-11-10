@@ -1,0 +1,20 @@
+{
+  "invitation.subject": "Lời mời tham gia DocParse",
+  "invitation.title": "Không gian làm việc đã sẵn sàng",
+  "invitation.text": "Bạn được mời vào {organization}. Hãy chọn thông tin đăng nhập hoặc đăng nhập nếu đã có tài khoản.",
+  "invitation.action": "Chấp nhận lời mời",
+  "invitation.code": "Mã lời mời: {token}",
+  "confirmation.subject": "Xác nhận email DocParse",
+  "confirmation.title": "Một bước trước khi bắt đầu",
+  "confirmation.text": "Xác nhận email này thuộc về bạn để truy cập không gian làm việc.",
+  "confirmation.action": "Xác nhận email",
+  "reset.subject": "Đặt lại mật khẩu DocParse",
+  "reset.title": "Chọn mật khẩu mới",
+  "reset.text": "Dùng mã này trong DocParse để đặt lại mật khẩu. Nếu không yêu cầu thay đổi, bạn có thể bỏ qua email.",
+  "reset.code": "Mã đặt lại: {code}",
+  "footer": "DocParse · Fyr Studio",
+  "reset_link.subject": "Đặt lại mật khẩu DocParse",
+  "reset_link.title": "Chọn mật khẩu mới",
+  "reset_link.text": "Mở liên kết này trong DocParse để chọn mật khẩu mới.",
+  "reset_link.action": "Đặt lại mật khẩu"
+}

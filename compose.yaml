@@ -1,0 +1,136 @@
+name: docparse
+
+services:
+  usage:
+    build:
+      context: ../fyr-usage
+    environment:
+      DATABASE_URL: postgresql://docparse:${POSTGRES_PASSWORD:-local-docparse-password}@postgres:5432/fyr_usage_local
+      PORT: "3010"
+      JWT_AUDIENCE: fyr-usage
+    ports:
+      - "127.0.0.1:3010:3010"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  ollama:
+    image: ollama/ollama@sha256:ebaef4f4c5d93660e1f25f8ad085a112f51ccfb0e8458073e71793959dba91c9
+    gpus: all
+    environment:
+      OLLAMA_NO_CLOUD: "1"
+      OLLAMA_NUM_PARALLEL: "1"
+      OLLAMA_MAX_LOADED_MODELS: "2"
+      OLLAMA_CONTEXT_LENGTH: "8192"
+    ports:
+      - "127.0.0.1:11434:11434"
+    volumes:
+      - ollama-models:/root/.ollama
+
+  postgres:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_DB: docparse
+      POSTGRES_USER: docparse
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-local-docparse-password}
+    ports:
+      - "127.0.0.1:${POSTGRES_PORT:-15432}:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U docparse -d docparse"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  azurite:
+    image: mcr.microsoft.com/azure-storage/azurite:3.37.0
+    command: azurite --blobHost 0.0.0.0 --location /data --debug /data/debug.log --disableTelemetry
+    ports:
+      - "127.0.0.1:10000:10000"
+    volumes:
+      - azurite-data:/data
+
+  api:
+    image: docparse-api
+    build:
+      context: ./back
+      dockerfile: Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:8080
+      PostgreSQL__ConnectionString: Host=postgres;Port=5432;Database=docparse;Username=docparse;Password=${POSTGRES_PASSWORD:-local-docparse-password}
+      AzureStorage__ConnectionString: DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://azurite:10000/devstoreaccount1;
+      AzureStorage__ContainerName: documents
+      AI__Provider: Ollama
+      Ollama__Endpoint: http://ollama:11434/
+      Ollama__ChatModel: qwen3:4b-instruct
+      Ollama__EmbeddingModel: qwen3-embedding:0.6b
+      OpenAI__ApiKey: ${OPENAI_API_KEY:-}
+      Email__Host: mailpit
+      FyrUsage__Enabled: "true"
+      FyrUsage__Endpoint: http://usage:3010/
+      FyrUsage__ClientKey: docparse-local
+      FyrUsage__KeyId: local-v1
+      FyrUsage__PrivateKeyPath: /app/usage-private.pem
+      Widget__AssetsPath: /app/web
+      PublicApi__BaseUrl: http://127.0.0.1:5128
+      DataProtection__KeyPath: /app/keys
+    volumes:
+      - ./.local/usage-private.pem:/app/usage-private.pem:ro
+      - identity-keys:/app/keys
+      - ./front/dist:/app/web:ro
+    ports:
+      - "127.0.0.1:5128:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      azurite:
+        condition: service_started
+      migrate:
+        condition: service_completed_successfully
+      mailpit:
+        condition: service_started
+      ollama:
+        condition: service_started
+
+  migrate:
+    image: docparse-api
+    build:
+      context: ./back
+    command: ["--migrate"]
+    environment:
+      PostgreSQL__ConnectionString: Host=postgres;Port=5432;Database=docparse;Username=docparse;Password=${POSTGRES_PASSWORD:-local-docparse-password}
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  mailpit:
+    image: axllent/mailpit:v1.27.0
+    ports:
+      - "127.0.0.1:8025:8025"
+      - "127.0.0.1:1025:1025"
+
+  front:
+    build:
+      context: ./front
+      dockerfile: Dockerfile
+    environment:
+      VITE_API_PROXY_TARGET: http://api:8080
+      VITE_USE_POLLING: "true"
+      VITE_LOCALIZATION_REMOTE: "false"
+      VITE_LOCALIZATION_PROXY_TARGET: https://fyr-localization-production.up.railway.app
+    ports:
+      - "127.0.0.1:5173:5173"
+    volumes:
+      - ./front:/app
+      - frontend-node-modules:/app/node_modules
+    depends_on:
+      - api
+
+volumes:
+  postgres-data:
+  azurite-data:
+  frontend-node-modules:
+  identity-keys:
+  ollama-models:

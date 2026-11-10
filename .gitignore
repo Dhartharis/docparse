@@ -3,3 +3,8 @@ obj/
 appsettings.Development.json
 *.user
 .env
+.keys/
+
+.local/
+__pycache__/
+*.pyc
