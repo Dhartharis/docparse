@@ -1,6 +1,6 @@
 # Operational connection management
 
-This increment implements organization-scoped **configuration and credential management** for future operational-data integrations. It does not receive products/stock, call provider APIs, schedule synchronization, grant bot tool access or connect Debt Assistant automatically. A `configured` connection has the required saved fields/keys; it is not a verified provider connection or a synchronized data source.
+This document covers organization-scoped **configuration and credential management**, introduced in PR #8. Signed Push reception and the price/stock projection are implemented separately in the [Push increment](operational-push.md). Pull execution, synchronization schedules, bot tool access and automatic Debt Assistant onboarding remain pending. A `configured` connection has the required saved fields/keys; it is not a verified provider connection or proof of synchronized data.
 
 Product direction: [DocParse definition](https://docs.google.com/document/d/1ao033DtGdlLEpfZSGLFziUoYwa5ztnBSh7mcjROCITE/edit). Implementation proposals: [design PR #4](https://github.com/Dhartharis/docparse/pull/4) and [wire-contract PR #6](https://github.com/Dhartharis/docparse/pull/6). This feature does not integrate or approve those PRs. Stripe test billing remains independent in [PR #7](https://github.com/Dhartharis/docparse/pull/7).
 
@@ -72,14 +72,14 @@ The policy runner needs no extra package, database or provider. PostgreSQL tests
 
 The general backend regression suite requires an image built from this branch. To avoid replacing the main app's `docparse-api` tag during review, it can run with a temporary Compose override for the `api` and `migrate` image references. Build a separate image, provide that override through `COMPOSE_FILE`, and retain the existing local PostgreSQL/Azurite/Mailpit services. Do not use the old main image when checking the new migration count.
 
-The new GitHub workflow builds/policy-checks only. Frontend publication remains manual. Local database integration checks are not represented as GitHub-hosted checks. When combining this branch with Stripe PR #7, preserve both localization key sets and advance the merged catalog version beyond the independently introduced version 3.
+PR #8's workflow builds/policy-checks only; the later Push workflow also runs its isolated database/browser checks on GitHub. Frontend publication remains manual. When combining with Stripe PR #7, preserve both localization key sets and advance the combined catalog version beyond the highest merged version (Push uses version 4).
 
 ## Still required
 
-- Implement authenticated Push events/receipts, replay protection and the operational projection under the reviewed v1 contract.
+- Validate the implemented [Push events/receipts, replay protection and projection](operational-push.md) against a real source and production proxy before deployment.
 - Implement on-demand and scheduled Pull, including destination/DNS protection, actual scoped provider authentication, stable source revisions/cursors, durable retries and freshness enforcement during answers.
 - Add explicit bot/source/tool grants and public/internal field policy before exposing source data through any conversation channel.
 - Extend Fyr Usage for the new operations and implement Debt Assistant's provider/delegated connection flow after its operational modules/APIs are ready.
 - Add real provider acceptance, production operational controls and actor-attributed administrative audit before treating this as a production-certified connector.
 
-This PR changes configuration/credential management only. It does not merge other PRs, deploy, import data, send external messages or mutate external business operations.
+The original configuration increment changes configuration/credential management only; the Push increment adds reception/import separately. Neither performs a PR merge, deployment, external message or external business mutation.
