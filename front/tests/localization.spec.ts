@@ -12,12 +12,12 @@ const portal = read("fyr-portal/en.json");
 test('does not replace a newer validated cache with an older advertised version', async ({ page }) => {
   await page.addInitScript(pack => {
     localStorage.setItem('fyr.docparse.pack.docparse.en', JSON.stringify(pack));
-  }, { ...docparse, version: 3, strings: { ...docparse.strings, 'login.greeting': 'Cached version three' } });
+  }, { ...docparse, version: docparse.version + 1, strings: { ...docparse.strings, 'login.greeting': 'Newer cached welcome' } });
   await mockService(page);
   await page.goto('/');
   await expect(page.locator('html')).toHaveAttribute('data-login-localization', 'bundled-or-cached');
-  await expect(page.getByRole('heading', {name: 'Cached version three'})).toBeVisible();
-  expect(await page.evaluate(() => JSON.parse(localStorage.getItem('fyr.docparse.pack.docparse.en')!).version)).toBe(3);
+  await expect(page.getByRole('heading', {name: 'Newer cached welcome'})).toBeVisible();
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem('fyr.docparse.pack.docparse.en')!).version)).toBe(docparse.version + 1);
 });
 
 async function mockService(
@@ -33,7 +33,7 @@ async function mockService(
       await route.fulfill({
         json: {
           schemaVersion: 1,
-          locales: ["en", "es", "vi"].map((code) => ({ code, version: 2 })),
+          locales: ["en", "es", "vi"].map((code) => ({ code, version: (product === "docparse" ? docparse : portal).version })),
         },
       });
       return;
@@ -43,7 +43,7 @@ async function mockService(
         ? `docparse/locales/${locale}.json`
         : `fyr-portal/${locale}.json`,
     );
-    await route.fulfill({ json: transform(product, { ...pack, version: 2 }) });
+    await route.fulfill({ json: transform(product, pack) });
   });
 }
 
@@ -97,7 +97,7 @@ test("rejects incomplete packs, wrong versions, interpolation changes and corrup
   await mockService(page, (product, pack) => {
     completed.push(product);
     return product === "docparse"
-      ? { ...pack, version: 3 }
+      ? { ...pack, version: pack.version + 1 }
       : {
           ...pack,
           strings: {

@@ -9,6 +9,7 @@ import TeamPanel from "./TeamPanel";
 import TrashPanel from "./TrashPanel";
 import CostCalculator from "../usage/CostCalculator";
 import UsagePanel from "../usage/UsagePanel";
+import BillingPanel from "../billing/BillingPanel";
 
 import BotsScreen from "../bots/BotsScreen";
 import Modal from "../../components/Modal";
@@ -36,6 +37,7 @@ export default function WorkspaceScreen({
   const [trashOpen, setTrashOpen] = useState(false);
   const [catalogRevision, setCatalogRevision] = useState(0);
   const [usageOpen, setUsageOpen] = useState(false);
+  const [billingOpen, setBillingOpen] = useState(false);
   const [calculatorOpen, setCalculatorOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
@@ -226,6 +228,18 @@ export default function WorkspaceScreen({
               >
                 {t("onboarding.create_business")}
               </button>
+              {active?.role === "Admin" && (
+                <button
+                  type="button"
+                  disabled={busy || featureBusy}
+                  onClick={(event) => {
+                    event.currentTarget.closest("details")?.removeAttribute("open");
+                    setBillingOpen(true);
+                  }}
+                >
+                  {t("billing.title")}
+                </button>
+              )}
               {active?.role === "Admin" && (
                 <button
                   type="button"
@@ -462,6 +476,11 @@ export default function WorkspaceScreen({
                     t={t}
                     language={language}
                   />
+                </Modal>
+              )}
+              {billingOpen && active.role === "Admin" && (
+                <Modal title={t("billing.title")} closeLabel={t("common.close")} onClose={() => setBillingOpen(false)}>
+                  <BillingPanel key={active.id} organizationId={active.id} t={t} language={language} />
                 </Modal>
               )}
               {calculatorOpen && active.role === "Admin" && (

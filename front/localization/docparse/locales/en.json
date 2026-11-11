@@ -1,6 +1,6 @@
 {
   "locale": "en",
-  "version": 2,
+  "version": 3,
   "strings": {
     "login.page_title": "Sign in · DocParse",
     "language.label": "Language",
@@ -382,6 +382,32 @@
     "onboarding.mail_sent": "Accepted by mail server",
     "onboarding.mail_failed": "Could not send",
     "onboarding.mail_cancelled": "Cancelled",
-    "chat.no_sources": "No relevant information was found in this assistant’s knowledge bases."
+    "chat.no_sources": "No relevant information was found in this assistant’s knowledge bases.",
+    "billing.title": "Test payments",
+    "billing.test_notice": "Stripe test mode. No real payments are collected and test subscriptions do not change your credits.",
+    "billing.loading": "Loading payment settings…",
+    "billing.not_configured": "Payments are not connected yet. You can continue using DocParse locally.",
+    "billing.subscription": "Test subscription",
+    "billing.pending": "{count} payment events waiting to synchronize",
+    "billing.failed_sync": "Some payment updates need attention. Retry synchronization after checking the payment connection.",
+    "billing.plan": "Test subscription plan",
+    "billing.plan_starter": "Starter",
+    "billing.plan_pro": "Pro",
+    "billing.no_prices": "No test subscription prices are configured yet.",
+    "billing.checkout": "Open test checkout",
+    "billing.portal": "Manage test subscription",
+    "billing.refresh": "Refresh payment status",
+    "errors.billing_unavailable": "The payment connection is unavailable. Try again later.",
+    "errors.billing_conflict": "A checkout or subscription is already in progress. Refresh the status or manage the existing subscription.",
+    "errors.billing_reconciliation": "This checkout needs to be reconciled before another attempt. Contact the administrator; a second checkout was not created.",
+    "billing.status_none": "No subscription",
+    "billing.status_incomplete": "Payment incomplete",
+    "billing.status_incomplete_expired": "Checkout expired",
+    "billing.status_trialing": "Trial",
+    "billing.status_active": "Active",
+    "billing.status_past_due": "Payment overdue",
+    "billing.status_canceled": "Canceled",
+    "billing.status_unpaid": "Unpaid",
+    "billing.status_paused": "Paused"
   }
 }

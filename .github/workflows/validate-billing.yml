@@ -1,0 +1,37 @@
+name: Validate billing backend
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'back/**'
+      - 'tests/BillingPolicyTests/**'
+      - 'tests/check_backend_boundaries.py'
+      - '.github/workflows/validate-billing.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'back/**'
+      - 'tests/BillingPolicyTests/**'
+      - 'tests/check_backend_boundaries.py'
+      - '.github/workflows/validate-billing.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Build API
+        run: dotnet build back/DocParse.csproj
+      - name: Check module boundaries
+        run: python3 tests/check_backend_boundaries.py
+      - name: Check webhook policies with controlled time
+        run: dotnet run --project tests/BillingPolicyTests/BillingPolicyTests.csproj

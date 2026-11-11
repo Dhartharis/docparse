@@ -33,6 +33,9 @@ export type ErrorCode =
   | "processing"
   | "usage_limit"
   | "usage_unavailable"
+  | "billing_unavailable"
+  | "billing_conflict"
+  | "billing_reconciliation"
   | "admin_access"
   | "last_admin"
   | "knowledge_base_linked"
@@ -228,6 +231,8 @@ export async function api<T>(
       const problem = await response.clone().json().catch(() => ({}));
       if (problem.code === "usage_limit") throw new ApiError("usage_limit");
       if (problem.code === "usage_unavailable") throw new ApiError("usage_unavailable");
+      if (problem.code === "billing_unavailable") throw new ApiError("billing_unavailable");
+      if (problem.code === "billing_reconciliation") throw new ApiError("billing_reconciliation");
     }
     if (response.status === 409) {
       const problem = await response
@@ -238,6 +243,7 @@ export async function api<T>(
       if (problem.code === "document_duplicate") throw new ApiError("document_duplicate");
       if (problem.code === "last_admin") throw new ApiError("last_admin");
       if (problem.code === "admin_access") throw new ApiError("admin_access");
+      if (problem.code === "billing_conflict") throw new ApiError("billing_conflict");
     }
     if (!response.ok) throw failure(response);
     return responseType === "blob"
