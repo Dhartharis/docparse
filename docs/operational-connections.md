@@ -1,6 +1,6 @@
 # Operational connection management
 
-This document covers organization-scoped **configuration and credential management**, introduced in PR #8. Signed Push reception and the price/stock projection are implemented separately in the [Push increment](operational-push.md). Pull execution, synchronization schedules, bot tool access and automatic Debt Assistant onboarding remain pending. A `configured` connection has the required saved fields/keys; it is not a verified provider connection or proof of synchronized data.
+This document covers organization-scoped **configuration and credential management**, introduced in PR #8. Signed Push reception and the price/stock projection are implemented separately in the [Push increment](operational-push.md). On-demand Pull is available through the [Admin query preview](operational-live-query.md); synchronization schedules, bot tool access and automatic Debt Assistant onboarding remain pending. A `configured` connection has the required saved fields/keys; it is not a verified provider connection or proof of synchronized data.
 
 Product direction: [DocParse definition](https://docs.google.com/document/d/1ao033DtGdlLEpfZSGLFziUoYwa5ztnBSh7mcjROCITE/edit). Implementation proposals: [design PR #4](https://github.com/Dhartharis/docparse/pull/4) and [wire-contract PR #6](https://github.com/Dhartharis/docparse/pull/6). This feature does not integrate or approve those PRs. Stripe test billing remains independent in [PR #7](https://github.com/Dhartharis/docparse/pull/7).
 

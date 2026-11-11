@@ -1,6 +1,6 @@
 {
   "locale": "es",
-  "version": 4,
+  "version": 5,
   "strings": {
     "login.page_title": "Iniciar sesión · DocParse",
     "language.label": "Idioma",
@@ -446,6 +446,27 @@
     "records.current": "Dentro del plazo de vigencia",
     "records.not_current": "Vencido, inactivo o desconocido",
     "records.price_observed": "Precio observado",
-    "records.stock_observed": "Stock observado"
+    "records.stock_observed": "Stock observado",
+    "live.show": "Consultar origen ahora",
+    "live.hide": "Ocultar consulta",
+    "live.title": "Consulta en vivo al origen",
+    "live.help": "Consulta al proveedor sin modificar sus datos ni guardar la respuesta. Esta vista administrativa no concede acceso desde el chat. La vigencia usa las fechas de observación del origen.",
+    "live.selector": "Buscar por",
+    "live.text": "Descripción",
+    "live.identifier": "Identificador de oferta",
+    "live.sku": "SKU",
+    "live.value": "Valor de búsqueda",
+    "live.loading": "Consultando origen…",
+    "live.submit": "Consultar origen",
+    "live.found": "Una oferta coincide.",
+    "live.ambiguous": "Coinciden varias ofertas. Refina la búsqueda antes de elegir.",
+    "live.not_found": "No hay una oferta coincidente.",
+    "live.unavailable": "El origen no pudo confirmar este resultado.",
+    "errors.connection_not_ready": "Guarda una clave del proveedor antes de consultar este origen.",
+    "errors.provider_credentials": "El proveedor rechazó la clave guardada. Actualiza sus credenciales.",
+    "errors.provider_scope": "El proveedor no autorizó la consulta. Revisa el negocio y sus permisos.",
+    "errors.provider_rate": "Se alcanzó el límite de consultas al origen. Espera antes de reintentar.",
+    "errors.provider_response": "No se pudo verificar la respuesta del origen. No se usará ningún resultado.",
+    "errors.provider_unavailable": "El origen no está disponible o la consulta agotó su plazo. Inténtalo más tarde."
   }
 }

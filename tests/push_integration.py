@@ -101,7 +101,9 @@ try:
     docker("compose", "exec", "-T", "postgres", "createdb", "-U", "docparse", DATABASE)
     created = True
     connection = f"Host=postgres;Database={DATABASE};Username=docparse;Password={password}"
-    shared = ["--network", network, "-e", "ASPNETCORE_ENVIRONMENT=Development", "-e", "PostgreSQL__ConnectionString=" + connection, "-e", "FyrUsage__Enabled=false"]
+    shared = ["--network", network, "--add-host", "host.docker.internal:host-gateway", "-e", "ASPNETCORE_ENVIRONMENT=Development", "-e", "PostgreSQL__ConnectionString=" + connection, "-e", "FyrUsage__Enabled=false"]
+    if "--live" in sys.argv:
+        shared += ["-e", "Integrations__AllowedProviderOrigins__0="+os.environ["DOCPARSE_LIVE_PROVIDER_ORIGIN"]]
     docker("run", "--rm", *shared, IMAGE, "--migrate")
     for name in ("a", "b"):
         docker("run", "--rm", *shared, "-e", f"LocalAdmin__Email=push-{name}-{SUFFIX}@example.test",
@@ -250,6 +252,9 @@ try:
                      DOCPARSE_PUSH_TEST_ORG=org,DOCPARSE_PUSH_TEST_SOURCE=source_id)
     subprocess.run(["dotnet","run","--project","tests/PushPolicyTests/PushPolicyTests.csproj","--","--fencing"],cwd=ROOT,env=fence_env,check=True)
     docker("start",CONTAINER); healthy()
+    if "--live" in sys.argv:
+        from live_queries_integration import exercise
+        exercise(globals())
     if "--browser" in sys.argv:
         env = dict(os.environ,VITE_API_PROXY_TARGET=BASE,DOCPARSE_REAL_API=BASE,DOCPARSE_TEST_ADMIN_EMAIL="push-a",DOCPARSE_TEST_ADMIN_PASSWORD=PASSWORD)
         subprocess.run(["npm.cmd" if os.name == "nt" else "npm","--prefix","front","test","--","tests/real-push.spec.ts","--workers=1"],cwd=ROOT,env=env,check=True)

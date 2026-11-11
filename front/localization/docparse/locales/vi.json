@@ -1,6 +1,6 @@
 {
   "locale": "vi",
-  "version": 4,
+  "version": 5,
   "strings": {
     "login.page_title": "Đăng nhập · DocParse",
     "language.label": "Ngôn ngữ",
@@ -446,6 +446,27 @@
     "records.current": "Trong thời hạn cho phép",
     "records.not_current": "Hết hạn, ngừng hoạt động hoặc chưa rõ",
     "records.price_observed": "Thời điểm quan sát giá",
-    "records.stock_observed": "Thời điểm quan sát tồn kho"
+    "records.stock_observed": "Thời điểm quan sát tồn kho",
+    "live.show": "Truy vấn nguồn ngay",
+    "live.hide": "Ẩn truy vấn nguồn",
+    "live.title": "Truy vấn nguồn trực tiếp",
+    "live.help": "Truy vấn nhà cung cấp mà không thay đổi dữ liệu hoặc lưu kết quả. Bản xem trước dành cho quản trị viên không cấp quyền truy cập trò chuyện. Độ mới dựa trên thời điểm quan sát của nguồn.",
+    "live.selector": "Tìm theo",
+    "live.text": "Mô tả",
+    "live.identifier": "Mã mặt hàng",
+    "live.sku": "SKU",
+    "live.value": "Giá trị tìm kiếm",
+    "live.loading": "Đang truy vấn nguồn…",
+    "live.submit": "Truy vấn nguồn",
+    "live.found": "Có một mặt hàng phù hợp.",
+    "live.ambiguous": "Có nhiều mặt hàng phù hợp. Hãy thu hẹp tìm kiếm trước khi chọn.",
+    "live.not_found": "Không có mặt hàng phù hợp.",
+    "live.unavailable": "Nguồn chưa thể xác nhận kết quả này.",
+    "errors.connection_not_ready": "Lưu khóa của nhà cung cấp trước khi truy vấn nguồn này.",
+    "errors.provider_credentials": "Nhà cung cấp từ chối khóa đã lưu. Hãy cập nhật thông tin xác thực.",
+    "errors.provider_scope": "Nhà cung cấp không cho phép truy vấn này. Kiểm tra doanh nghiệp và quyền truy cập.",
+    "errors.provider_rate": "Đã đạt giới hạn truy vấn nguồn. Hãy chờ trước khi thử lại.",
+    "errors.provider_response": "Không thể xác minh phản hồi của nguồn. Không sử dụng kết quả nào.",
+    "errors.provider_unavailable": "Nguồn không khả dụng hoặc truy vấn hết thời gian. Hãy thử lại sau."
   }
 }

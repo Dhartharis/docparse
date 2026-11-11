@@ -24,4 +24,6 @@ public interface IOperationalProjection
         int clockSkewSeconds, DbTransaction transaction, CancellationToken ct);
     Task<OperationalSnapshot> ReadAsync(Guid organizationId, Guid connectionId, int priceMaxAgeSeconds, int stockMaxAgeSeconds,
         DateTimeOffset now, CancellationToken ct);
+    Task<IReadOnlyList<OperationalRecordView>> CheckLiveAsync(Guid organizationId, Guid connectionId, IReadOnlyList<OperationalOffer> offers,
+        int priceMaxAgeSeconds, int stockMaxAgeSeconds, DateTimeOffset now, CancellationToken ct);
 }

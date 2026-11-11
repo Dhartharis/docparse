@@ -25,6 +25,8 @@ public static class IntegrationsModule
         services.AddScoped<IConnectionStore, ConnectionStore>();
         services.AddScoped<IConnectionCatalog, ConnectionCatalog>();
         services.AddScoped<PushInbox>();
+        services.AddSingleton<IProviderTransport, ProviderTransport>();
+        services.AddScoped<ILiveQueries, LiveQueries>();
         services.AddHostedService<PushWorker>();
         return services;
     }
@@ -40,6 +42,14 @@ public static class IntegrationsModule
             var access = context.HttpContext.RequestServices.GetRequiredService<IOrganizationAccess>();
             if (!await access.HasAccessAsync(org, true, context.HttpContext.RequestAborted)) return Results.NotFound();
             try { return await next(context); }
+            catch (LiveQueryFailure error)
+            {
+                var status = error.Code switch { "validation" or "connection_origin" => 400, "not_found" => 404,
+                    "connection_conflict" or "connection_not_ready" or "provider_credentials" or "provider_scope" => 409,
+                    "provider_rate" => 429, "provider_response" => 502, _ => 503 };
+                if (error.RetryAfterSeconds is {} delay) context.HttpContext.Response.Headers.RetryAfter = delay.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                return Results.Problem(statusCode:status,title:"The source query could not be completed.",extensions:new Dictionary<string,object?> { ["code"]=error.Code });
+            }
             catch (ConnectionFailure error)
             {
                 var status = error.Kind == ConnectionFailureKind.Conflict ? 409 : 400;
@@ -49,6 +59,8 @@ public static class IntegrationsModule
         });
         group.MapGet("/", async (Guid organizationId, IConnectionStore store, ProviderPolicy policy, CancellationToken ct) =>
             Results.Ok(new { connections = await store.ListAsync(organizationId, ct), providerOriginsConfigured = policy.AllowedOrigins.Count > 0 }));
+        group.MapPost("/{connectionId:guid}/query", async (Guid organizationId, Guid connectionId, LiveQuery query, ILiveQueries queries, CancellationToken ct) =>
+            Results.Ok(await queries.QueryAsync(organizationId,connectionId,query,ct)));
         group.MapPost("/", async (Guid organizationId, CreateRequest request, IConnectionStore store, ProviderPolicy policy, CancellationToken ct) =>
         {
             if (request.RequestId == Guid.Empty || request.Definition is null) throw new ConnectionFailure(ConnectionFailureKind.Invalid);

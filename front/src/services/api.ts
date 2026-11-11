@@ -39,6 +39,12 @@ export type ErrorCode =
   | "last_admin"
   | "knowledge_base_linked"
   | "document_duplicate"
+  | "connection_not_ready"
+  | "provider_credentials"
+  | "provider_scope"
+  | "provider_rate"
+  | "provider_response"
+  | "provider_unavailable"
   | "server";
 export class ApiError extends Error {
   code: ErrorCode;
@@ -225,6 +231,12 @@ export async function api<T>(
       clearSession();
       notifyExpired();
       throw new ApiError("session");
+    }
+    if (!response.ok) {
+      const problem = await response.clone().json().catch(() => ({}));
+      const sourceCodes = ["connection_not_ready", "provider_credentials", "provider_scope", "provider_rate", "provider_response", "provider_unavailable"] as const;
+      const code = sourceCodes.find(value => value === problem.code);
+      if (code) throw new ApiError(code);
     }
     if (response.status === 429 || response.status === 503) {
       const problem = await response.clone().json().catch(() => ({}));

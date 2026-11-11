@@ -11,6 +11,9 @@ export type OperationalRecord = {
   priceCurrent: boolean; availabilityCurrent: boolean;
 };
 export type OperationalSnapshot = { total: number; records: OperationalRecord[] };
+export type LiveResponse = { queriedAt: string; results: { selectorValue: string; status: "found" | "ambiguous" | "not_found" | "unavailable"; records: OperationalRecord[] }[] };
+export const querySource = (org: string, connection: string, query: { selectorKind: string; values: string[]; fields: string[] }, signal: AbortSignal) =>
+  api<LiveResponse>(`/organizations/${org}/connections/${connection}/query`, query, signal);
 export const readOperationalRecords = (org: string, connection: string, signal: AbortSignal) =>
   api<OperationalSnapshot>(`/organizations/${org}/connections/${connection}/records`, undefined, signal);
 
