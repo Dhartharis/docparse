@@ -1,6 +1,6 @@
 {
   "locale": "vi",
-  "version": 5,
+  "version": 6,
   "strings": {
     "login.page_title": "Đăng nhập · DocParse",
     "language.label": "Ngôn ngữ",
@@ -467,6 +467,25 @@
     "errors.provider_scope": "Nhà cung cấp không cho phép truy vấn này. Kiểm tra doanh nghiệp và quyền truy cập.",
     "errors.provider_rate": "Đã đạt giới hạn truy vấn nguồn. Hãy chờ trước khi thử lại.",
     "errors.provider_response": "Không thể xác minh phản hồi của nguồn. Không sử dụng kết quả nào.",
-    "errors.provider_unavailable": "Nguồn không khả dụng hoặc truy vấn hết thời gian. Hãy thử lại sau."
+    "errors.provider_unavailable": "Nguồn không khả dụng hoặc truy vấn hết thời gian. Hãy thử lại sau.",
+    "source_sync.show": "Xem đồng bộ",
+    "source_sync.hide": "Ẩn đồng bộ",
+    "source_sync.title": "Đồng bộ theo lịch",
+    "source_sync.help": "Nguồn tự động nhập từng trang theo khoảng thời gian đã cấu hình. Giữ các bản ghi hiện có trong khi nhập lại; chỉ xóa bản ghi vắng mặt sau khi hoàn tất ảnh chụp dữ liệu.",
+    "source_sync.not_yet": "Chưa có",
+    "source_sync.waiting": "Đang chờ trang tiếp theo",
+    "source_sync.processing": "Đang đồng bộ một trang",
+    "source_sync.failed": "Đồng bộ đã dừng",
+    "source_sync.snapshot_complete": "Ảnh chụp dữ liệu ban đầu đã hoàn tất.",
+    "source_sync.snapshot_pending": "Ảnh chụp dữ liệu ban đầu chưa hoàn tất.",
+    "source_sync.last_page": "Trang áp dụng gần nhất: {date}",
+    "source_sync.last_batch": "Lô hoàn tất gần nhất: {date}",
+    "source_sync.next": "Lần thử tiếp theo: {date}",
+    "source_sync.attempts": "Lần xử lý {count} trên 5.",
+    "source_sync.cursor_expired": "Con trỏ nguồn đã hết hạn. Đã lên lịch nhập lại toàn bộ.",
+    "source_sync.error": "Không thể đồng bộ trang. Kiểm tra nhà cung cấp và khởi động lại sau khi xử lý sự cố.",
+    "source_sync.restart": "Nhập lại toàn bộ",
+    "source_sync.restart_help": "Bắt đầu ảnh chụp dữ liệu mới từ nguồn? Dữ liệu hiện có vẫn khả dụng trong khi tải. Con trỏ hiện tại và kết quả đang xử lý sẽ bị loại bỏ.",
+    "source_sync.paused": "Người vận hành đã tạm dừng đồng bộ"
   }
 }

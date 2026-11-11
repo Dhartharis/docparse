@@ -75,7 +75,9 @@ Admins can configure source businesses, Push/on-demand/scheduled modes, freshnes
 
 Signed Push events now enter a durable inbox and update a versioned price/stock projection. Admins can inspect received offers, unknown values and source freshness in the same panel. See [Push protocol, setup and validation](docs/operational-push.md). Schedules, chat tools and the Debt Assistant adapter remain pending.
 
-On-demand Pull is now available as an Admin source-query preview, with signed provider requests, bounded destination/response validation and read-only live evidence checks. See [live queries](docs/operational-live-query.md). Schedules, chat tools/grants, tool usage accounting and Debt Assistant onboarding remain pending.
+On-demand Pull is now available as an Admin source-query preview, with signed provider requests, bounded destination/response validation and read-only live evidence checks. See [live queries](docs/operational-live-query.md). Chat tools/grants, tool usage accounting and Debt Assistant onboarding remain pending.
+
+Scheduled Pull now imports full snapshots and incremental changes with durable leases, protected cursors and atomic page/outcome commits. Admins can inspect progress and confirm a full restart. See [scheduled synchronization](docs/operational-scheduled-sync.md). Bot/tool access, operational metering, Debt Assistant onboarding and commercial activation remain separate work.
 
 This increment saves configuration and keys only. It does not yet import operational data, call provider APIs, run synchronization, grant bot tools or establish the native Debt Assistant connection. A configured row is not proof of provider connectivity.
 

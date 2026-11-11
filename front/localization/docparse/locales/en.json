@@ -1,6 +1,6 @@
 {
   "locale": "en",
-  "version": 5,
+  "version": 6,
   "strings": {
     "login.page_title": "Sign in · DocParse",
     "language.label": "Language",
@@ -467,6 +467,25 @@
     "errors.provider_scope": "The provider did not authorize this query. Check its business and permissions.",
     "errors.provider_rate": "The source query limit was reached. Wait before trying again.",
     "errors.provider_response": "The source response could not be verified. No result is being used.",
-    "errors.provider_unavailable": "The source is unavailable or the query timed out. Try again later."
+    "errors.provider_unavailable": "The source is unavailable or the query timed out. Try again later.",
+    "source_sync.show": "View synchronization",
+    "source_sync.hide": "Hide synchronization",
+    "source_sync.title": "Scheduled synchronization",
+    "source_sync.help": "This source imports pages automatically at the configured interval. Existing records are kept during a new full import; absent records are removed only after its snapshot completes.",
+    "source_sync.not_yet": "Not yet",
+    "source_sync.waiting": "Waiting for the next page",
+    "source_sync.processing": "Synchronizing a page",
+    "source_sync.failed": "Synchronization stopped",
+    "source_sync.snapshot_complete": "The initial snapshot is complete.",
+    "source_sync.snapshot_pending": "The initial snapshot has not completed yet.",
+    "source_sync.last_page": "Last applied page: {date}",
+    "source_sync.last_batch": "Last completed batch: {date}",
+    "source_sync.next": "Next attempt: {date}",
+    "source_sync.attempts": "Processing attempt {count} of 5.",
+    "source_sync.cursor_expired": "The source cursor expired. A new full import is scheduled.",
+    "source_sync.error": "The page could not be synchronized. Check the provider and restart after resolving the problem.",
+    "source_sync.restart": "Restart full import",
+    "source_sync.restart_help": "Start a new snapshot from the source? Existing records stay available while it loads. The current cursor and in-flight result will be discarded.",
+    "source_sync.paused": "Synchronization is paused by the operator"
   }
 }

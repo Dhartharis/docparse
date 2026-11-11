@@ -27,6 +27,8 @@ public static class IntegrationsModule
         services.AddScoped<PushInbox>();
         services.AddSingleton<IProviderTransport, ProviderTransport>();
         services.AddScoped<ILiveQueries, LiveQueries>();
+        services.AddScoped<ScheduledSyncStore>();
+        if(configuration.GetValue("Integrations:ScheduledSyncEnabled",true))services.AddHostedService<ScheduledSyncWorker>();
         services.AddHostedService<PushWorker>();
         return services;
     }
@@ -61,6 +63,16 @@ public static class IntegrationsModule
             Results.Ok(new { connections = await store.ListAsync(organizationId, ct), providerOriginsConfigured = policy.AllowedOrigins.Count > 0 }));
         group.MapPost("/{connectionId:guid}/query", async (Guid organizationId, Guid connectionId, LiveQuery query, ILiveQueries queries, CancellationToken ct) =>
             Results.Ok(await queries.QueryAsync(organizationId,connectionId,query,ct)));
+        group.MapGet("/{connectionId:guid}/sync",async(Guid organizationId,Guid connectionId,ScheduledSyncStore store,CancellationToken ct)=>
+        {
+            var result=await store.StatusAsync(organizationId,connectionId,ct);return result is null?Results.NotFound():Results.Ok(result);
+        });
+        group.MapPost("/{connectionId:guid}/sync/restart",async(Guid organizationId,Guid connectionId,RevisionRequest request,ScheduledSyncStore store,CancellationToken ct)=>
+        {
+            if(!await store.RestartAsync(organizationId,connectionId,request.Revision,ct))throw new ConnectionFailure(ConnectionFailureKind.Conflict);
+            return Results.NoContent();
+        })
+            .RequireRateLimiting("authentication");
         group.MapPost("/", async (Guid organizationId, CreateRequest request, IConnectionStore store, ProviderPolicy policy, CancellationToken ct) =>
         {
             if (request.RequestId == Guid.Empty || request.Definition is null) throw new ConnectionFailure(ConnectionFailureKind.Invalid);

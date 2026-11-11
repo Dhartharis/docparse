@@ -57,7 +57,7 @@ Local rates/plans are simulation, not GPU economics or approved selling prices. 
 
 Integrations is a feature module inside the same deployment, with application validation/store ports and its own schema. Admin-only routes bind every operation to the current organization. Connection/credential composite tenant foreign keys, locked revision checks, a request-ID creation guard and one-current-key indexes protect integrity. Active secrets are protected with the existing persisted Data Protection key ring and scoped purposes; protection/key-ring I/O happens before database transactions. Only new receiving secrets are returned once, never through metadata reads. Replacing/disconnecting erases revoked ciphertext while retaining key metadata.
 
-On-demand provider queries are implemented below; the scheduler and bot grants remain future work. Pull base URLs require approved origins and strict URI validation, with no embedded credentials/query/fragment. Live requests enforce destination/DNS/redirect protections at the outbound boundary. The source business/destination/modes are immutable; settings and keys use revision checks. Disconnection cannot be undone by an old create replay.
+On-demand queries and scheduled imports are implemented below; bot grants remain future work. Pull base URLs require approved origins and strict URI validation, with no embedded credentials/query/fragment. Live requests enforce destination/DNS/redirect protections at the outbound boundary. The source business/destination/modes are immutable; settings and keys use revision checks. Disconnection cannot be undone by an old create replay.
 
 See [operational connection setup](../docs/operational-connections.md) for local configuration, validation, version/merge considerations and remaining work. No new package, payment change, external business mutation or deployment is introduced.
 
@@ -70,6 +70,10 @@ The Admin preview is tenant scoped and excludes disconnected sources; neither re
 ## On-demand operational queries
 
 Integrations exposes `ILiveQueries` for explicitly authorized callers. The current transport endpoint is Admin-only; no Chat, API/widget or Viewer tool access is implied. It owns provider credentials/admission and calls a replaceable `IProviderTransport` boundary. The HTTP adapter pins validated DNS addresses to sockets, validates TLS, rejects redirects/proxies/compression, and bounds response/deadline. OperationalData compares live evidence against its own stored revision/tombstone through `CheckLiveAsync`; queries do not mutate the projection. Admission commits before provider I/O and a final configuration/credential fence rejects in-flight revocation. See [live-query behavior and validation](../docs/operational-live-query.md).
+
+## Scheduled operational synchronization
+
+Integrations owns durable scheduled jobs, protected cursors, generation/credential/lease fences and retry timing. OperationalData owns snapshot membership/order and completed absence floors. Page effects and the next cursor/outcome share a short local transaction through the projection contract; provider/key-ring I/O occurs outside it. Connection/work-row locks and the source projection advisory lock serialize Push/import commits consistently. Snapshot absence only takes effect at completion and cannot erase newer Push or permit delayed resurrection. Admin status/full-restart controls expose no cursor or key. See [scheduled synchronization](../docs/operational-scheduled-sync.md) for settings, failure policy, validation and release limits.
 
 ## Retention
 

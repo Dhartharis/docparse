@@ -88,7 +88,7 @@ try:
     created = True
     connection = f"Host=postgres;Database={DATABASE};Username=docparse;Password={password}"
     shared = ["--network", network, "-e", "ASPNETCORE_ENVIRONMENT=Development", "-e", "PostgreSQL__ConnectionString=" + connection,
-              "-e", "FyrUsage__Enabled=false"]
+              "-e", "FyrUsage__Enabled=false", "-e", "Integrations__ScheduledSyncEnabled=false"]
     docker("run", "--rm", *shared, IMAGE, "--migrate")
     for name in ("a", "b"):
         docker("run", "--rm", *shared, "-e", f"LocalAdmin__Email=connections-{name}-{SUFFIX}@example.test",
@@ -158,6 +158,7 @@ try:
     assert other["connection"]["id"] != source_id
     assert len(expect(200, http(other_root + "/", token=b))["connections"]) == 1
     path = root + "/" + source_id
+    assert expect(200,http(path+"/sync",token=a))["state"] == "paused"
     pull_secret = (uuid.uuid4().hex + uuid.uuid4().hex).upper()
     expect(404, http(path + "/pull-key", {"revision": source["revision"], "keyId": "provider-key", "secretHex": pull_secret}, b, "PUT"))
     expect(400, http(path + "/pull-key", {"revision": source["revision"], "keyId": "provider-key", "secretHex": "dp_chat_key"}, a, "PUT"))

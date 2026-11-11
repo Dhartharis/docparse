@@ -1,6 +1,6 @@
 {
   "locale": "es",
-  "version": 5,
+  "version": 6,
   "strings": {
     "login.page_title": "Iniciar sesión · DocParse",
     "language.label": "Idioma",
@@ -467,6 +467,25 @@
     "errors.provider_scope": "El proveedor no autorizó la consulta. Revisa el negocio y sus permisos.",
     "errors.provider_rate": "Se alcanzó el límite de consultas al origen. Espera antes de reintentar.",
     "errors.provider_response": "No se pudo verificar la respuesta del origen. No se usará ningún resultado.",
-    "errors.provider_unavailable": "El origen no está disponible o la consulta agotó su plazo. Inténtalo más tarde."
+    "errors.provider_unavailable": "El origen no está disponible o la consulta agotó su plazo. Inténtalo más tarde.",
+    "source_sync.show": "Ver sincronización",
+    "source_sync.hide": "Ocultar sincronización",
+    "source_sync.title": "Sincronización programada",
+    "source_sync.help": "Este origen importa páginas automáticamente en el intervalo configurado. Los registros existentes se conservan durante una nueva carga; los ausentes se eliminan solo cuando termina su carga completa.",
+    "source_sync.not_yet": "Todavía no",
+    "source_sync.waiting": "Esperando la siguiente página",
+    "source_sync.processing": "Sincronizando una página",
+    "source_sync.failed": "Sincronización detenida",
+    "source_sync.snapshot_complete": "La carga inicial está completa.",
+    "source_sync.snapshot_pending": "La carga inicial aún no ha terminado.",
+    "source_sync.last_page": "Última página aplicada: {date}",
+    "source_sync.last_batch": "Último lote completado: {date}",
+    "source_sync.next": "Próximo intento: {date}",
+    "source_sync.attempts": "Intento de procesamiento {count} de 5.",
+    "source_sync.cursor_expired": "El cursor del origen venció. Se programó una nueva carga completa.",
+    "source_sync.error": "No se pudo sincronizar la página. Revisa el proveedor y reinicia después de resolver el problema.",
+    "source_sync.restart": "Reiniciar carga completa",
+    "source_sync.restart_help": "¿Iniciar una nueva carga desde el origen? Los registros existentes seguirán disponibles mientras carga. Se descartarán el cursor actual y la respuesta en curso.",
+    "source_sync.paused": "La sincronización está pausada por el operador"
   }
 }

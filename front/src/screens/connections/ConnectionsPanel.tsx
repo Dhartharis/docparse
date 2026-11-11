@@ -7,6 +7,7 @@ import type { ConnectionDefinition, ConnectionList, SourceConnection } from "../
 import ConnectionEditor from "./ConnectionEditor";
 import ReceivedRecords from "./ReceivedRecords";
 import LiveQueryPanel from "./LiveQueryPanel";
+import SyncPanel from "./SyncPanel";
 
 type Issued = { connectionId: string; keyId: string; secret: string };
 type Editor = { kind: "new" } | { kind: "settings" | "pull"; connection: SourceConnection };
@@ -23,6 +24,7 @@ export default function ConnectionsPanel({ organizationId, language, t, onBusyCh
   const [copied, setCopied] = useState(false);
   const [recordsId, setRecordsId] = useState<string | null>(null);
   const [liveId, setLiveId] = useState<string | null>(null);
+  const [syncId, setSyncId] = useState<string | null>(null);
   const controller = useRef<AbortController | null>(null);
   const secretField = useRef<HTMLTextAreaElement | null>(null);
   const inFlight = useRef(false);
@@ -147,6 +149,7 @@ export default function ConnectionsPanel({ organizationId, language, t, onBusyCh
       <ul className="connection-modes">{connection.push && <li>{t("connections.push")}</li>}{connection.pullLive && <li>{t("connections.live")}</li>}{connection.pullScheduled && <li>{t("connections.scheduled")}</li>}</ul>
       {connection.pushKey && <p className="panel-note">{t("connections.expires", { date: new Intl.DateTimeFormat(language, { dateStyle: "medium", timeStyle: "short" }).format(new Date(connection.pushKey.expiresAt)) })}</p>}
       {!connection.disconnectedAt && <div className="connection-actions">
+        {connection.pullScheduled && <button type="button" className="text-button" aria-expanded={syncId === connection.id} disabled={busy} onClick={() => setSyncId(previous => previous === connection.id ? null : connection.id)}>{t(syncId === connection.id ? "source_sync.hide" : "source_sync.show")}</button>}
         {connection.pullLive && <button type="button" className="text-button" aria-expanded={liveId === connection.id} disabled={busy} onClick={() => setLiveId(previous => previous === connection.id ? null : connection.id)}>{t(liveId === connection.id ? "live.hide" : "live.show")}</button>}
         <button type="button" className="text-button" aria-expanded={recordsId === connection.id} disabled={busy} onClick={() => setRecordsId(previous => previous === connection.id ? null : connection.id)}>{t(recordsId === connection.id ? "records.hide" : "records.show")}</button>
         <button type="button" className="text-button" disabled={busy || Boolean(editor || confirmation)} onClick={() => setEditor({ kind: "settings", connection })}>{t("connections.edit")}</button>
@@ -156,6 +159,7 @@ export default function ConnectionsPanel({ organizationId, language, t, onBusyCh
       </div>}
       {!connection.disconnectedAt && recordsId === connection.id && <ReceivedRecords organizationId={organizationId} connectionId={connection.id} language={language} t={t} />}
       {!connection.disconnectedAt && liveId === connection.id && <LiveQueryPanel organizationId={organizationId} connectionId={connection.id} language={language} t={t} />}
+      {!connection.disconnectedAt && syncId === connection.id && <SyncPanel organizationId={organizationId} connection={connection} language={language} t={t} />}
     </li>)}</ul>
   </section>;
 }

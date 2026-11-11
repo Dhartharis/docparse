@@ -26,4 +26,6 @@ public interface IOperationalProjection
         DateTimeOffset now, CancellationToken ct);
     Task<IReadOnlyList<OperationalRecordView>> CheckLiveAsync(Guid organizationId, Guid connectionId, IReadOnlyList<OperationalOffer> offers,
         int priceMaxAgeSeconds, int stockMaxAgeSeconds, DateTimeOffset now, CancellationToken ct);
+    Task ApplySyncPageAsync(Guid organizationId, Guid connectionId, Guid generation, OperationalPage page, DateTimeOffset now,
+        int clockSkewSeconds, DbTransaction transaction, CancellationToken ct);
 }

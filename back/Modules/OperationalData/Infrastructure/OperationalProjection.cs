@@ -6,7 +6,7 @@ using Npgsql;
 
 namespace DocParse.Modules.OperationalData.Infrastructure;
 
-public sealed class OperationalProjection(IConfiguration configuration) : IOperationalProjection
+public sealed partial class OperationalProjection(IConfiguration configuration) : IOperationalProjection
 {
     private static readonly JsonSerializerOptions Json = new(JsonSerializerDefaults.Web);
     public void Validate(OperationalChange change, DateTimeOffset now, int clockSkewSeconds) => OperationalRules.Validate(change, now, clockSkewSeconds);
@@ -31,6 +31,13 @@ public sealed class OperationalProjection(IConfiguration configuration) : IOpera
         var deleted = change.Tombstone is not null;
         var payload = change.Offer is not null ? JsonSerializer.Serialize(change.Offer, Json) : JsonSerializer.Serialize(change.Tombstone, Json);
         var db = transaction.Connection as NpgsqlConnection ?? throw new InvalidOperationException("An active local PostgreSQL transaction is required.");
+        await LockSourceAsync(db,org,connection,ct);
+        var floor = await FloorAsync(db,org,connection,ct);
+        if (floor is not null && Number(version)<=Number(floor))
+        {
+            await using var existing=Command(db,"SELECT is_deleted FROM operational_data.records WHERE organization_id=@org AND connection_id=@connection AND external_id=@id",("org",org),("connection",connection),("id",id));
+            if(await existing.ExecuteScalarAsync(ct) is null or true) return ProjectionOutcome.IgnoredOlderVersion;
+        }
         await using (var add = Command(db, """
             INSERT INTO operational_data.records(organization_id,connection_id,external_id,version,is_deleted,payload)
             VALUES(@org,@connection,@id,@version::numeric,@deleted,@payload::jsonb) ON CONFLICT DO NOTHING RETURNING external_id
@@ -89,13 +96,18 @@ public sealed class OperationalProjection(IConfiguration configuration) : IOpera
         await using var db = await OpenAsync(ct);
         await using var tx = await db.BeginTransactionAsync(System.Data.IsolationLevel.RepeatableRead,ct);
         var records = new List<OperationalRecordView>();
+        var floor=await FloorAsync(db,org,connection,ct);
         foreach (var offer in offers)
         {
             await using var command = Command(db,"SELECT version::text,is_deleted,payload::text FROM operational_data.records WHERE organization_id=@org AND connection_id=@connection AND external_id=@id",
                 ("org",org),("connection",connection),("id",offer.ExternalId));
             await using var reader = await command.ExecuteReaderAsync(ct);
             if (await reader.ReadAsync(ct))
+            {
+                if(reader.GetBoolean(1) && floor is not null && Number(offer.Version)<=Number(floor)) throw new OperationalDataInvalid();
                 LiveEvidence.Check(offer,reader.GetString(0),reader.GetBoolean(1),reader.GetBoolean(1) ? null : JsonSerializer.Deserialize<OperationalOffer>(reader.GetString(2),Json));
+            }
+            else if(floor is not null && Number(offer.Version)<=Number(floor)) throw new OperationalDataInvalid();
             records.Add(LiveEvidence.View(offer,priceAge,stockAge,now));
         }
         await tx.CommitAsync(ct); return records;

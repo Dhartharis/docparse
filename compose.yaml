@@ -69,6 +69,7 @@ services:
       OpenAI__ApiKey: ${OPENAI_API_KEY:-}
       Email__Host: mailpit
       Integrations__AllowedProviderOrigins__0: ${INTEGRATION_PROVIDER_ORIGIN:-}
+      Integrations__ScheduledSyncEnabled: ${INTEGRATION_SCHEDULED_SYNC_ENABLED:-true}
       FyrUsage__Enabled: "true"
       FyrUsage__Endpoint: http://usage:3010/
       FyrUsage__ClientKey: docparse-local

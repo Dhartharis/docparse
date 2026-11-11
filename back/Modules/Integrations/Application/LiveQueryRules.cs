@@ -4,10 +4,11 @@ using DocParse.Modules.Integrations.Contracts;
 
 namespace DocParse.Modules.Integrations.Application;
 
-public sealed class LiveQueryFailure(string code, int? retryAfterSeconds = null) : Exception("The source query could not be completed.")
+public sealed class LiveQueryFailure(string code, int? retryAfterSeconds = null, bool retryable = false) : Exception("The source query could not be completed.")
 {
     public string Code { get; } = code;
     public int? RetryAfterSeconds { get; } = retryAfterSeconds;
+    public bool Retryable { get; } = retryable;
 }
 public static class LiveQueryRules
 {

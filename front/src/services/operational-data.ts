@@ -1,4 +1,5 @@
 import { api } from "./api";
+import type { SourceConnection } from "./connections";
 
 export type Quantity = { known: boolean; quantity: string | null; reason: string | null };
 export type OperationalRecord = {
@@ -12,6 +13,9 @@ export type OperationalRecord = {
 };
 export type OperationalSnapshot = { total: number; records: OperationalRecord[] };
 export type LiveResponse = { queriedAt: string; results: { selectorValue: string; status: "found" | "ambiguous" | "not_found" | "unavailable"; records: OperationalRecord[] }[] };
+export type SyncStatus = { state: "waiting" | "processing" | "failed" | "paused"; attempts: number; dueAt: string; errorCode: string | null; lastSuccessAt: string | null; lastCompletedAt: string | null; snapshotCompleted: boolean };
+export const readSyncStatus = (org: string, connection: string, signal: AbortSignal) => api<SyncStatus>(`/organizations/${org}/connections/${connection}/sync`, undefined, signal);
+export const restartSync = (org: string, connection: SourceConnection, signal: AbortSignal) => api(`/organizations/${org}/connections/${connection.id}/sync/restart`, { revision: connection.revision }, signal);
 export const querySource = (org: string, connection: string, query: { selectorKind: string; values: string[]; fields: string[] }, signal: AbortSignal) =>
   api<LiveResponse>(`/organizations/${org}/connections/${connection}/query`, query, signal);
 export const readOperationalRecords = (org: string, connection: string, signal: AbortSignal) =>
