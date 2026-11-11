@@ -997,6 +997,22 @@ button:disabled { cursor: wait; opacity: .6; }
 .usage-breakdown { list-style: none; padding: 0; }
 .usage-breakdown li { padding: 12px 0; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; gap: 12px; font-size: 13px; }
 .usage-breakdown small { display: block; margin-top: 6px; color: var(--muted); }
+.connection-actions { display: flex; flex-wrap: wrap; gap: 10px; margin: 16px 0; }
+.connection-actions .submit-button { width: auto; margin: 0; padding-inline: 20px; }
+.connection-editor { border-block: 1px solid var(--line); padding: 16px 0; }
+.connection-editor fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
+.connection-editor .field, .connection-secret .field { display: flex; flex-direction: column; gap: 8px; margin: 14px 0; }
+.connection-editor input:not([type=checkbox]), .connection-secret input, .connection-secret textarea { box-sizing: border-box; width: 100%; min-height: 44px; border: 1px solid var(--line); border-radius: 7px; background: transparent; color: var(--text); padding: 10px; }
+.connection-settings { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 0 16px; }
+.connection-modes { display: flex; flex-wrap: wrap; gap: 12px; list-style: none; padding: 0; font-size: 13px; }
+.connection-modes label { display: flex; align-items: center; gap: 8px; min-height: 44px; }
+.connection-list { list-style: none; padding: 0; }
+.connection-list > li { border-top: 1px solid var(--line); padding: 16px 0; }
+.connection-heading { display: flex; align-items: baseline; flex-wrap: wrap; gap: 8px 16px; justify-content: space-between; }
+.connection-heading h3 { overflow-wrap: anywhere; margin-bottom: 8px; }
+.connection-heading span, .connection-url { font-size: 12px; color: var(--muted); overflow-wrap: anywhere; }
+.connection-secret { border: 1px solid var(--line); border-radius: 10px; padding: 16px; }
+@media (max-width: 480px) { .connection-settings { grid-template-columns: 1fr; } }
 
 .trash-trigger { border: 0; background: transparent; color: #dfa5ad; min-height: 44px; padding: 10px 0; font-size: 12px; text-align: left; }
 .assistant-settings + .trash-trigger { margin-top: 20px; border-top: 1px solid var(--line); width: 100%; }

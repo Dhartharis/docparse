@@ -15,7 +15,7 @@ DocParse/
     playwright.config.ts
     README.md
   back/                          ASP.NET Core / .NET 8 API
-    Modules/                     Access, Knowledge, Bots and Chat
+    Modules/                     Access, Knowledge, Bots, Chat, Usage and Integrations
     ARCHITECTURE.md               Module boundaries and current backend status
     Infrastructure/              Schema migrations and shared transport/provider configuration
     AGENTS.md                    Backend working instructions
@@ -68,6 +68,12 @@ git diff --check
 Backend validation includes `python tests/check_backend_boundaries.py` and `python tests/backend_integration.py --browser`: disposable local database/API, deterministic AI double, four real browser journeys for access, documents/restoration, API/widget and owner onboarding. `python tests/onboarding_integration.py` checks invitation generations and durable mail retries. `python tests/local_ai_integration.py --metered` exercises real local Ollama/Fyr Usage and restart recovery; run `--retention` separately for deletion/purge. `python tests/usage_service_integration.py` runs the sibling service's V1/V2 suites against a temporary database. See [V1_LOCAL.md](V1_LOCAL.md) for results and [REVISION_LOCAL.md](REVISION_LOCAL.md) for the manual review route.
 
 Owners register a new business without invitation and verify email through Mailpit. Invites grant access to existing organizations/assistants. API keys, embed, 30-day trash and the Usage panel are connected. Local tokens are measured but credit tariffs are explicitly simulation, not commercial prices; there are no payments. Metering currently supports Ollama and blocks paid adapters. Local catalogs are bundled, with remote localization disabled in Compose. `.local/usage-private.pem` is an ignored local machine credential; back it up privately with the persisted database/Blob/key volumes. Do not delete volumes to restart services.
+
+## Operational data connections
+
+Admins can configure source businesses, Push/on-demand/scheduled modes, freshness settings and separate protected credentials through Account -> Data connections. New receiving secrets are shown once; replacements/disconnections revoke local credentials. Generic Pull destinations must first be approved through `INTEGRATION_PROVIDER_ORIGIN` or `Integrations:AllowedProviderOrigins`. See [connection setup, validation and remaining implementation](docs/operational-connections.md).
+
+This increment saves configuration and keys only. It does not yet import operational data, call provider APIs, run synchronization, grant bot tools or establish the native Debt Assistant connection. A configured row is not proof of provider connectivity.
 
 ## Hosting paths
 
