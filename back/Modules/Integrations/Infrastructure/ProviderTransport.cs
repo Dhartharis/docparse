@@ -25,19 +25,27 @@ public static class ProviderDestination
             !(bytes[0] == 0x20 && bytes[1] == 0x02) && !(bytes[0] == 0x3f && bytes[1] == 0xff);
     }
     public static Uri Endpoint(string baseUrl, ProviderPolicy policy)
+        => Endpoint(baseUrl,policy,"query");
+    public static Uri Endpoint(string baseUrl, ProviderPolicy policy, string operation)
     {
         var definition = new ConnectionDefinition("probe",baseUrl,false,true,false,0,new("probe",600,60,0,null)).Validate(policy);
-        return new Uri(new Uri(definition.BaseUrl!),"integrations/v1/operational-data/query");
+        if (operation is not ("query" or "changes")) throw new LiveQueryFailure("validation");
+        return new Uri(new Uri(definition.BaseUrl!),"integrations/v1/operational-data/"+operation);
     }
 }
 
 public interface IProviderTransport
 {
     Task<byte[]> QueryAsync(Uri endpoint, string keyId, string secretHex, byte[] body, CancellationToken ct);
+    Task<byte[]> ChangesAsync(Uri endpoint, string keyId, string secretHex, CancellationToken ct);
 }
 public sealed class ProviderTransport(ProviderPolicy policy, TimeProvider clock) : IProviderTransport
 {
     public async Task<byte[]> QueryAsync(Uri endpoint, string keyId, string secretHex, byte[] body, CancellationToken ct)
+        => await SendAsync(endpoint,keyId,secretHex,body,HttpMethod.Post,ct);
+    public async Task<byte[]> ChangesAsync(Uri endpoint, string keyId, string secretHex, CancellationToken ct)
+        => await SendAsync(endpoint,keyId,secretHex,[],HttpMethod.Get,ct);
+    private async Task<byte[]> SendAsync(Uri endpoint, string keyId, string secretHex, byte[] body, HttpMethod method, CancellationToken ct)
     {
         var local = policy.Development && (endpoint.IsLoopback || endpoint.Host == "host.docker.internal");
         using var handler = new SocketsHttpHandler
@@ -53,18 +61,21 @@ public sealed class ProviderTransport(ProviderPolicy policy, TimeProvider clock)
             }
         };
         using var client = new HttpClient(handler) { Timeout=Timeout.InfiniteTimeSpan };
-        using var request = new HttpRequestMessage(HttpMethod.Post,endpoint) { Version=HttpVersion.Version11, VersionPolicy=HttpVersionPolicy.RequestVersionExact, Content=new ByteArrayContent(body) };
-        request.Content.Headers.ContentType = new("application/json") { CharSet="utf-8" };
+        using var request = new HttpRequestMessage(method,endpoint) { Version=HttpVersion.Version11, VersionPolicy=HttpVersionPolicy.RequestVersionExact };
+        if (method == HttpMethod.Post) { request.Content=new ByteArrayContent(body); request.Content.Headers.ContentType = new("application/json") { CharSet="utf-8" }; }
         var timestamp = clock.GetUtcNow().ToUnixTimeSeconds().ToString(System.Globalization.CultureInfo.InvariantCulture);
         var nonce = Guid.NewGuid().ToString();
-        var canonical = string.Join("\n","FYR-OPDATA-V1","POST",endpoint.PathAndQuery,keyId,timestamp,nonce,Convert.ToHexString(SHA256.HashData(body)).ToLowerInvariant());
+        var canonical = string.Join("\n","FYR-OPDATA-V1",method.Method,endpoint.PathAndQuery,keyId,timestamp,nonce,Convert.ToHexString(SHA256.HashData(body)).ToLowerInvariant());
         request.Headers.Add("X-Fyr-Key-Id",keyId); request.Headers.Add("X-Fyr-Timestamp",timestamp); request.Headers.Add("X-Fyr-Request-Id",nonce);
         request.Headers.Add("X-Fyr-Signature","v1="+Convert.ToHexString(HMACSHA256.HashData(Convert.FromHexString(secretHex),Encoding.UTF8.GetBytes(canonical))).ToLowerInvariant());
         using var response = await client.SendAsync(request,HttpCompletionOption.ResponseHeadersRead,ct);
         if (!response.IsSuccessStatusCode)
         {
             int? retry = int.TryParse(response.Headers.RetryAfter?.ToString(),out var delay) && delay is >=1 and <=3600 ? delay : null;
-            throw new LiveQueryFailure(response.StatusCode switch { HttpStatusCode.Unauthorized => "provider_credentials", HttpStatusCode.Forbidden => "provider_scope", HttpStatusCode.TooManyRequests => "provider_rate", _ => "provider_unavailable" },retry);
+            throw new LiveQueryFailure(response.StatusCode switch { HttpStatusCode.Unauthorized => "provider_credentials", HttpStatusCode.Forbidden => "provider_scope",
+                HttpStatusCode.Gone => "cursor_expired", HttpStatusCode.TooManyRequests => "provider_rate",
+                >=HttpStatusCode.BadRequest and <HttpStatusCode.InternalServerError => "provider_response", _ => "provider_unavailable" },retry,
+                response.StatusCode == HttpStatusCode.TooManyRequests || (int)response.StatusCode>=500);
         }
         var content = response.Content.Headers.ContentType;
         if (response.StatusCode != HttpStatusCode.OK || response.Content.Headers.ContentEncoding.Count != 0 ||

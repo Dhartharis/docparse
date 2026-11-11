@@ -165,6 +165,8 @@ public sealed class PushInbox(IConfiguration configuration, IDataProtectionProvi
     {
         await using var db = await OpenAsync(ct);
         await using var tx = await db.BeginTransactionAsync(ct);
+        await using(var source=Command(db,"SELECT id FROM integrations.connections WHERE organization_id=@org AND id=@connection FOR UPDATE",("org",work.OrganizationId),("connection",work.ConnectionId)))
+            if(await source.ExecuteScalarAsync(ct)is null)return;
         await using (var fence = Command(db, "SELECT id FROM integrations.push_inbox WHERE id=@id AND lease_id=@lease AND state='processing' AND lease_until>clock_timestamp() FOR UPDATE",
             ("id", work.ReceiptId), ("lease", work.LeaseId)))
             if (await fence.ExecuteScalarAsync(ct) is null) return;
