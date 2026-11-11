@@ -53,6 +53,12 @@ The Compose configuration is local only. It does not provision Azure resources o
 
 See [frontend setup and integration notes](front/README.md) and [backend setup and API endpoints](back/README.md).
 
+## Public AI-readable entry
+
+The frontend ships `/llms.txt` (a curated public index) and `/index.md` (an English product overview), following the community proposal at https://llmstxt.org/. HTML advertises both through link relations. They work without JavaScript or an account; authenticated product data remains behind the existing API permissions. The app's existing `noindex, nofollow` policy is preserved. These files do not promise crawler adoption, search ranking or a ChatGPT action/MCP integration.
+
+Edit the source files under `front/public` as product information changes. Publish only deployed/public capabilities, never tenant content, private API examples or secrets. Vite copies them into the build; Azure configuration excludes both paths from the SPA fallback and sets text MIME types. Validate with `npm --prefix front run build`, `npm --prefix front run lint` and `npm --prefix front test -- tests/ai-entry.spec.ts`. After a separately authorized manual deployment, verify both production URLs return their text with HTTP 200 rather than the login HTML; this PR does not deploy them.
+
 ## Validation
 
 ```powershell

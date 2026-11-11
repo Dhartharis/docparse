@@ -1,0 +1,13 @@
+# DocParse
+
+> DocParse is Fyr Studio's web document assistant. It helps authorized users ask questions about documents in their organization's knowledge bases.
+
+This index describes public product information. Account access, uploaded documents, conversations and organization data require authentication and applicable permissions. This file does not grant those permissions or provide an agent execution endpoint. Feature availability depends on the deployed application; roadmap work is not a live capability.
+
+## Product information
+
+- [DocParse overview](https://docparse.fyr-studio.com/index.md): Product purpose, access model and where to start; readable without JavaScript or an account.
+
+## Optional
+
+- [Fyr Studio](https://fyr-studio.com/): The studio's public product portal.
