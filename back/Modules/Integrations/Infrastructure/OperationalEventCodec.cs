@@ -9,7 +9,7 @@ namespace DocParse.Modules.Integrations.Infrastructure;
 
 public static class OperationalEventCodec
 {
-    private static void Shape(JsonElement value, params string[] names)
+    internal static void Shape(JsonElement value, params string[] names)
     {
         if (value.ValueKind != JsonValueKind.Object) throw Invalid();
         var seen = new HashSet<string>(StringComparer.Ordinal);
@@ -17,9 +17,9 @@ public static class OperationalEventCodec
             if (!seen.Add(property.Name) || !names.Contains(property.Name, StringComparer.Ordinal)) throw Invalid();
         if (seen.Count != names.Length) throw Invalid();
     }
-    private static string Text(JsonElement value, string property) => value.GetProperty(property).ValueKind == JsonValueKind.String
+    internal static string Text(JsonElement value, string property) => value.GetProperty(property).ValueKind == JsonValueKind.String
         ? value.GetProperty(property).GetString()! : throw Invalid();
-    private static DateTimeOffset Instant(JsonElement value, string property)
+    internal static DateTimeOffset Instant(JsonElement value, string property)
     {
         var text = Text(value, property);
         if (!Regex.IsMatch(text, @"\A[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\.[0-9]{1,7})?Z\z") ||
@@ -45,6 +45,18 @@ public static class OperationalEventCodec
         if (Text(value, "state") != "unknown") throw Invalid();
         return new(false, Text(value, "reason"), null);
     }
+    internal static OperationalOffer ReadOffer(JsonElement offer)
+    {
+        Shape(offer, "externalId", "productId", "sku", "name", "presentation", "unitCode", "version", "updatedAt", "active", "price", "availability");
+        var stock = offer.GetProperty("availability");
+        Shape(stock, "tracking", "available", "reserved", "observedAt", "validUntil");
+        var active = offer.GetProperty("active");
+        if (active.ValueKind is not (JsonValueKind.True or JsonValueKind.False)) throw Invalid();
+        return new(Text(offer, "externalId"), Text(offer, "productId"), offer.GetProperty("sku").ValueKind == JsonValueKind.Null ? null : Text(offer, "sku"),
+            Text(offer, "name"), Text(offer, "presentation"), Text(offer, "unitCode"), Text(offer, "version"), Instant(offer, "updatedAt"), active.GetBoolean(),
+            Price(offer.GetProperty("price")), new(Text(stock, "tracking"), Quantity(stock.GetProperty("available")), Quantity(stock.GetProperty("reserved")),
+                Instant(stock, "observedAt"), Instant(stock, "validUntil")));
+    }
     public static PushEvent Parse(byte[] body)
     {
         try
@@ -67,16 +79,7 @@ public static class OperationalEventCodec
             {
                 if (Text(change, "kind") != "upsert") throw Invalid();
                 Shape(change, "kind", "offer");
-                var offer = change.GetProperty("offer");
-                Shape(offer, "externalId", "productId", "sku", "name", "presentation", "unitCode", "version", "updatedAt", "active", "price", "availability");
-                var stock = offer.GetProperty("availability");
-                Shape(stock, "tracking", "available", "reserved", "observedAt", "validUntil");
-                var active = offer.GetProperty("active");
-                if (active.ValueKind is not (JsonValueKind.True or JsonValueKind.False)) throw Invalid();
-                parsed = new(new(Text(offer, "externalId"), Text(offer, "productId"), offer.GetProperty("sku").ValueKind == JsonValueKind.Null ? null : Text(offer, "sku"),
-                    Text(offer, "name"), Text(offer, "presentation"), Text(offer, "unitCode"), Text(offer, "version"), Instant(offer, "updatedAt"), active.GetBoolean(),
-                    Price(offer.GetProperty("price")), new(Text(stock, "tracking"), Quantity(stock.GetProperty("available")), Quantity(stock.GetProperty("reserved")),
-                        Instant(stock, "observedAt"), Instant(stock, "validUntil"))), null);
+                parsed = new(ReadOffer(change.GetProperty("offer")), null);
             }
             var business = Text(root, "sourceBusinessId");
             if (!Regex.IsMatch(business, @"\A[A-Za-z0-9][A-Za-z0-9._:-]{0,127}\z")) throw Invalid();

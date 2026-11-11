@@ -1,6 +1,6 @@
 {
   "locale": "en",
-  "version": 4,
+  "version": 5,
   "strings": {
     "login.page_title": "Sign in · DocParse",
     "language.label": "Language",
@@ -446,6 +446,27 @@
     "records.current": "Within freshness limits",
     "records.not_current": "Expired, inactive or unknown",
     "records.price_observed": "Price observed",
-    "records.stock_observed": "Stock observed"
+    "records.stock_observed": "Stock observed",
+    "live.show": "Query source now",
+    "live.hide": "Hide source query",
+    "live.title": "Live source query",
+    "live.help": "Query the provider without changing its data or saving the response. This administrator preview does not grant chat access. Freshness is based on source observation times.",
+    "live.selector": "Search by",
+    "live.text": "Description",
+    "live.identifier": "Offer identifier",
+    "live.sku": "SKU",
+    "live.value": "Search value",
+    "live.loading": "Querying source…",
+    "live.submit": "Query source",
+    "live.found": "One matching offer.",
+    "live.ambiguous": "Several offers match. Refine the search before choosing.",
+    "live.not_found": "No matching offer.",
+    "live.unavailable": "The source could not confirm this result.",
+    "errors.connection_not_ready": "Save a provider key before querying this source.",
+    "errors.provider_credentials": "The provider rejected its saved key. Update the provider credentials.",
+    "errors.provider_scope": "The provider did not authorize this query. Check its business and permissions.",
+    "errors.provider_rate": "The source query limit was reached. Wait before trying again.",
+    "errors.provider_response": "The source response could not be verified. No result is being used.",
+    "errors.provider_unavailable": "The source is unavailable or the query timed out. Try again later."
   }
 }

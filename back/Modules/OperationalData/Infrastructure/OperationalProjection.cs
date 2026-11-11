@@ -84,4 +84,20 @@ public sealed class OperationalProjection(IConfiguration configuration) : IOpera
         await tx.CommitAsync(ct);
         return new(total, records);
     }
+    public async Task<IReadOnlyList<OperationalRecordView>> CheckLiveAsync(Guid org, Guid connection, IReadOnlyList<OperationalOffer> offers, int priceAge, int stockAge, DateTimeOffset now, CancellationToken ct)
+    {
+        await using var db = await OpenAsync(ct);
+        await using var tx = await db.BeginTransactionAsync(System.Data.IsolationLevel.RepeatableRead,ct);
+        var records = new List<OperationalRecordView>();
+        foreach (var offer in offers)
+        {
+            await using var command = Command(db,"SELECT version::text,is_deleted,payload::text FROM operational_data.records WHERE organization_id=@org AND connection_id=@connection AND external_id=@id",
+                ("org",org),("connection",connection),("id",offer.ExternalId));
+            await using var reader = await command.ExecuteReaderAsync(ct);
+            if (await reader.ReadAsync(ct))
+                LiveEvidence.Check(offer,reader.GetString(0),reader.GetBoolean(1),reader.GetBoolean(1) ? null : JsonSerializer.Deserialize<OperationalOffer>(reader.GetString(2),Json));
+            records.Add(LiveEvidence.View(offer,priceAge,stockAge,now));
+        }
+        await tx.CommitAsync(ct); return records;
+    }
 }

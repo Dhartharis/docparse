@@ -29,6 +29,7 @@ jobs:
       - run: python3 tests/check_backend_boundaries.py
       - run: dotnet run --project tests/ConnectionPolicyTests/ConnectionPolicyTests.csproj
       - run: dotnet run --project tests/PushPolicyTests/PushPolicyTests.csproj
+      - run: dotnet run --project tests/LiveQueryPolicyTests/LiveQueryPolicyTests.csproj
       - run: npm --prefix front ci
       - run: npm --prefix front run lint
       - run: npm --prefix front run build
@@ -36,8 +37,8 @@ jobs:
       - run: npm --prefix front test
       - name: Start disposable test infrastructure
         run: docker compose up -d --wait postgres azurite
-      - name: Verify Push with local database and browser
-        run: python3 tests/push_integration.py --browser
+      - name: Verify Push and live Pull with local database, provider and browser
+        run: python3 tests/live_queries_integration.py --browser
       - name: Stop CI infrastructure
         if: always()
         run: docker compose down
