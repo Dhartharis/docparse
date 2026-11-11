@@ -1,6 +1,6 @@
 {
   "locale": "es",
-  "version": 2,
+  "version": 3,
   "strings": {
     "login.page_title": "Iniciar sesión · DocParse",
     "language.label": "Idioma",
@@ -382,6 +382,32 @@
     "onboarding.mail_sent": "Aceptada por el servidor de correo",
     "onboarding.mail_failed": "No se pudo enviar",
     "onboarding.mail_cancelled": "Cancelada",
-    "chat.no_sources": "No se encontró información relevante en las bases de conocimiento de este asistente."
+    "chat.no_sources": "No se encontró información relevante en las bases de conocimiento de este asistente.",
+    "billing.title": "Pagos de prueba",
+    "billing.test_notice": "Modo de prueba de Stripe. No se realizan cobros reales y las suscripciones de prueba no cambian tus créditos.",
+    "billing.loading": "Cargando configuración de pagos…",
+    "billing.not_configured": "Los pagos todavía no están conectados. Puedes seguir usando DocParse en local.",
+    "billing.subscription": "Suscripción de prueba",
+    "billing.pending": "{count} eventos de pago pendientes de sincronizar",
+    "billing.failed_sync": "Algunas actualizaciones de pagos necesitan atención. Reintenta la sincronización después de revisar la conexión de pagos.",
+    "billing.plan": "Plan de suscripción de prueba",
+    "billing.plan_starter": "Starter",
+    "billing.plan_pro": "Pro",
+    "billing.no_prices": "Todavía no hay precios de suscripción de prueba configurados.",
+    "billing.checkout": "Abrir pago de prueba",
+    "billing.portal": "Gestionar suscripción de prueba",
+    "billing.refresh": "Actualizar estado de pagos",
+    "errors.billing_unavailable": "La conexión de pagos no está disponible. Inténtalo más tarde.",
+    "errors.billing_conflict": "Ya hay un pago o una suscripción en curso. Actualiza el estado o gestiona la suscripción existente.",
+    "errors.billing_reconciliation": "Es necesario conciliar este pago antes de otro intento. Contacta al administrador; no se creó un segundo pago.",
+    "billing.status_none": "Sin suscripción",
+    "billing.status_incomplete": "Pago incompleto",
+    "billing.status_incomplete_expired": "Pago caducado",
+    "billing.status_trialing": "En prueba",
+    "billing.status_active": "Activa",
+    "billing.status_past_due": "Pago pendiente",
+    "billing.status_canceled": "Cancelada",
+    "billing.status_unpaid": "Sin pagar",
+    "billing.status_paused": "Pausada"
   }
 }

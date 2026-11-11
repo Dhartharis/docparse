@@ -1,6 +1,6 @@
 {
   "locale": "vi",
-  "version": 2,
+  "version": 3,
   "strings": {
     "login.page_title": "Đăng nhập · DocParse",
     "language.label": "Ngôn ngữ",
@@ -382,6 +382,32 @@
     "onboarding.mail_sent": "Máy chủ thư đã nhận",
     "onboarding.mail_failed": "Không gửi được",
     "onboarding.mail_cancelled": "Đã hủy",
-    "chat.no_sources": "Không tìm thấy thông tin phù hợp trong cơ sở kiến thức của trợ lý này."
+    "chat.no_sources": "Không tìm thấy thông tin phù hợp trong cơ sở kiến thức của trợ lý này.",
+    "billing.title": "Thanh toán thử nghiệm",
+    "billing.test_notice": "Chế độ thử nghiệm Stripe. Không thu tiền thật và gói đăng ký thử nghiệm không thay đổi số tín dụng của bạn.",
+    "billing.loading": "Đang tải cài đặt thanh toán…",
+    "billing.not_configured": "Thanh toán chưa được kết nối. Bạn vẫn có thể sử dụng DocParse cục bộ.",
+    "billing.subscription": "Gói đăng ký thử nghiệm",
+    "billing.pending": "{count} sự kiện thanh toán đang chờ đồng bộ",
+    "billing.failed_sync": "Một số cập nhật thanh toán cần được kiểm tra. Hãy thử đồng bộ lại sau khi kiểm tra kết nối thanh toán.",
+    "billing.plan": "Gói đăng ký dùng thử",
+    "billing.plan_starter": "Starter",
+    "billing.plan_pro": "Pro",
+    "billing.no_prices": "Chưa cấu hình giá đăng ký thử nghiệm.",
+    "billing.checkout": "Mở thanh toán thử nghiệm",
+    "billing.portal": "Quản lý gói đăng ký thử nghiệm",
+    "billing.refresh": "Làm mới trạng thái thanh toán",
+    "errors.billing_unavailable": "Kết nối thanh toán hiện không khả dụng. Vui lòng thử lại sau.",
+    "errors.billing_conflict": "Đã có phiên thanh toán hoặc gói đăng ký đang xử lý. Hãy làm mới trạng thái hoặc quản lý gói đăng ký hiện tại.",
+    "errors.billing_reconciliation": "Cần đối soát phiên thanh toán này trước khi thử lại. Hãy liên hệ quản trị viên; không tạo phiên thanh toán thứ hai.",
+    "billing.status_none": "Chưa đăng ký",
+    "billing.status_incomplete": "Thanh toán chưa hoàn tất",
+    "billing.status_incomplete_expired": "Phiên thanh toán đã hết hạn",
+    "billing.status_trialing": "Đang dùng thử",
+    "billing.status_active": "Đang hoạt động",
+    "billing.status_past_due": "Thanh toán quá hạn",
+    "billing.status_canceled": "Đã hủy",
+    "billing.status_unpaid": "Chưa thanh toán",
+    "billing.status_paused": "Đã tạm dừng"
   }
 }

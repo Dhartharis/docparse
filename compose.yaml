@@ -68,6 +68,12 @@ services:
       Ollama__EmbeddingModel: qwen3-embedding:0.6b
       OpenAI__ApiKey: ${OPENAI_API_KEY:-}
       Email__Host: mailpit
+      Stripe__Enabled: ${STRIPE_ENABLED:-false}
+      Stripe__SecretKey: ${STRIPE_SECRET_KEY:-}
+      Stripe__WebhookSecret: ${STRIPE_WEBHOOK_SECRET:-}
+      Stripe__Prices__starter: ${STRIPE_STARTER_PRICE_ID:-}
+      Stripe__Prices__pro: ${STRIPE_PRO_PRICE_ID:-}
+      PublicWeb__BaseUrl: http://127.0.0.1:5173
       FyrUsage__Enabled: "true"
       FyrUsage__Endpoint: http://usage:3010/
       FyrUsage__ClientKey: docparse-local

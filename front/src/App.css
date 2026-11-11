@@ -997,6 +997,12 @@ button:disabled { cursor: wait; opacity: .6; }
 .usage-breakdown { list-style: none; padding: 0; }
 .usage-breakdown li { padding: 12px 0; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; gap: 12px; font-size: 13px; }
 .usage-breakdown small { display: block; margin-top: 6px; color: var(--muted); }
+.billing-status { margin: 20px 0; }
+.billing-status > div { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; }
+.billing-status dd { margin: 0; }
+.billing-actions { display: flex; flex-wrap: wrap; gap: 12px; margin: 20px 0; }
+.billing-actions button { min-height: 44px; }
+.billing-actions .submit-button { width: auto; margin: 0; padding-inline: 20px; }
 
 .trash-trigger { border: 0; background: transparent; color: #dfa5ad; min-height: 44px; padding: 10px 0; font-size: 12px; text-align: left; }
 .assistant-settings + .trash-trigger { margin-top: 20px; border-top: 1px solid var(--line); width: 100%; }

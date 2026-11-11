@@ -13,6 +13,7 @@ One .NET 8 deployment organized by functionality. PostgreSQL + pgvector owns str
 | Bots | Configuration, branding, base links, grants, pending access, API keys and embed settings | IBotCatalog, IBotChannelAccess |
 | Chat | Shared retrieval/answer orchestration and provider boundary | HTTP channels |
 | Usage | Fyr Usage adapter, reservation lifecycle, accounting outbox, plan selection and cost scenarios | IUsageMeter |
+| Billing | Optional Stripe test Checkout/portal, organization/customer mappings and durable subscription-state reconciliation | No paid entitlement contract yet |
 
 Each module owns its DbContext/schema. Cross-module imports use only Contracts. Application/domain code does not depend on EF, Azure SDKs, upload HTTP or vector types; tests/check_backend_boundaries.py guards this. One project supplies composition; namespaces/checks provide boundaries, not separate assemblies.
 
@@ -51,6 +52,14 @@ Persistent minute limits: 20 messages/key, 10/session, 120/external assistant, 6
 Fyr Usage V2 is the sole credit authority, authenticated ES256 M2M. It receives opaque organization/resource IDs and metrics, never prompts/document content. Immutable cycle/rate snapshots and integer microcredits/nanoUSD avoid floating-point drift. Reservations precede AI; actual Ollama token counts settle idempotently through a durable outbox. Restart recovery does not replay AI. Failures track provider cost without consuming customer allowance; missing quota/service prevents AI admission.
 
 Local rates/plans are simulation, not GPU economics or approved selling prices. Metering supports Ollama; paid adapters fail closed while metering is enabled until their measurements are implemented/validated. Deterministic legacy provider tests disable metering explicitly. Storage/egress/retrieval/processing values in the calculator are manual forecasts, not automatic infrastructure meters. Next-plan selection never resets the current cycle. Fyr Usage V1 contracts remain unchanged.
+
+## Stripe test billing
+
+Billing uses its own schema and provider/store application ports. Test mode is disabled by default and rejects live keys/events. Server-selected recurring USD monthly test prices feed Checkout; customer/checkout identity is persisted and leased before HTTP calls, with stable provider idempotency keys and fenced completion. Unknown creation outcomes stop automatic replay after 23 hours rather than risking a second object after provider key expiry.
+
+Signed webhook events commit a minimal durable inbox receipt before acknowledgement. One worker lane fetches current provider subscription state, validates organization/customer/price ownership and applies fenced results. Retries, due times and leases survive restart. The Admin-only panel offers test checkout, portal, status and explicit retry; EN/ES/VI catalogs are bundled. Return redirects grant nothing. No subscription event changes Fyr Usage entitlements or invoices excess credits in this increment.
+
+See [Stripe test setup](../docs/stripe-test-billing.md) for configuration, validation and unresolved commercial/lifecycle policies. Real Stripe test-account acceptance remains necessary. This is not live payment activation or deployment.
 
 ## Retention
 
