@@ -1032,3 +1032,12 @@ button:disabled { cursor: wait; opacity: .6; }
 .pending-invitations ul { list-style: none; padding: 0; }
 .pending-invitations small { display: block; color: var(--muted); margin-top: 6px; font-size: 11px; }
 .pending-invitations button { min-height: 44px; padding: 8px; background: transparent; border: 0; color: #d2b0f4; }
+
+.received-records { margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--line, #d8d8d8); }
+.record-list { list-style: none; padding: 0; display: grid; gap: 1rem; }
+.record-list > li { padding: 1rem; border: 1px solid var(--line, #d8d8d8); border-radius: .5rem; overflow-wrap: anywhere; }
+.record-list h5 { margin: 0; font-size: 1rem; }
+.record-list dl { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: .4rem 1rem; font-size: .875rem; }
+.record-list dd { margin: 0; }
+.record-list dt { font-weight: 600; }
+@media (max-width: 480px) { .record-list dl { grid-template-columns: minmax(0, 1fr); } .record-list dd { margin-bottom: .5rem; } }

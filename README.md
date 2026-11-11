@@ -73,6 +73,8 @@ Owners register a new business without invitation and verify email through Mailp
 
 Admins can configure source businesses, Push/on-demand/scheduled modes, freshness settings and separate protected credentials through Account -> Data connections. New receiving secrets are shown once; replacements/disconnections revoke local credentials. Generic Pull destinations must first be approved through `INTEGRATION_PROVIDER_ORIGIN` or `Integrations:AllowedProviderOrigins`. See [connection setup, validation and remaining implementation](docs/operational-connections.md).
 
+Signed Push events now enter a durable inbox and update a versioned price/stock projection. Admins can inspect received offers, unknown values and source freshness in the same panel. See [Push protocol, setup and validation](docs/operational-push.md). Pull execution, schedules, chat tools and the Debt Assistant adapter remain pending.
+
 This increment saves configuration and keys only. It does not yet import operational data, call provider APIs, run synchronization, grant bot tools or establish the native Debt Assistant connection. A configured row is not proof of provider connectivity.
 
 ## Hosting paths

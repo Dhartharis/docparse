@@ -1,0 +1,43 @@
+name: Validate operational Push
+
+on:
+  pull_request:
+    paths: ['back/**', 'front/**', 'tests/**', '.github/workflows/validate-operational-push.yml']
+  push:
+    branches: [main]
+    paths: ['back/**', 'front/**', 'tests/**', '.github/workflows/validate-operational-push.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: front/package-lock.json
+      - run: dotnet build back/DocParse.csproj
+      - run: python3 tests/check_backend_boundaries.py
+      - run: dotnet run --project tests/ConnectionPolicyTests/ConnectionPolicyTests.csproj
+      - run: dotnet run --project tests/PushPolicyTests/PushPolicyTests.csproj
+      - run: npm --prefix front ci
+      - run: npm --prefix front run lint
+      - run: npm --prefix front run build
+      - run: npx --prefix front playwright install --with-deps chromium
+      - run: npm --prefix front test
+      - name: Start disposable test infrastructure
+        run: docker compose up -d --wait postgres azurite
+      - name: Verify Push with local database and browser
+        run: python3 tests/push_integration.py --browser
+      - name: Stop CI infrastructure
+        if: always()
+        run: docker compose down
