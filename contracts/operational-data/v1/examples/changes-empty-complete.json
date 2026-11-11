@@ -1,0 +1,10 @@
+{
+  "contractVersion": "1",
+  "sourceBusinessId": "business-demo",
+  "mode": "snapshot",
+  "snapshotId": "snapshot-demo",
+  "snapshotWatermark": "9007199254740994",
+  "complete": true,
+  "nextCursor": "opaque-incremental-resume-token",
+  "changes": []
+}

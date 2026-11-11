@@ -1,0 +1,35 @@
+{
+  "contractVersion": "1",
+  "sourceBusinessId": "business-demo",
+  "eventId": "31ba22a5-48f0-4cb3-aaea-d4cd58eb5927",
+  "occurredAt": "2026-11-11T02:00:00Z",
+  "change": {
+    "kind": "upsert",
+    "offer": {
+      "externalId": "offer-coffee-250g",
+      "productId": "product-coffee",
+      "sku": "COFFEE-250G",
+      "name": "Ground coffee",
+      "presentation": "250 g bag",
+      "unitCode": "bag",
+      "version": "9007199254740993",
+      "updatedAt": "2026-11-11T02:00:00Z",
+      "active": true,
+      "price": {
+        "state": "known",
+        "amount": "4.990000",
+        "currency": "USD",
+        "taxTreatment": "unspecified",
+        "observedAt": "2026-11-11T02:00:00Z",
+        "validUntil": "2026-11-11T02:10:00Z"
+      },
+      "availability": {
+        "tracking": "tracked",
+        "available": { "state": "known", "quantity": "12" },
+        "reserved": { "state": "unknown", "reason": "not_provided" },
+        "observedAt": "2026-11-11T02:00:00Z",
+        "validUntil": "2026-11-11T02:01:00Z"
+      }
+    }
+  }
+}

@@ -1,0 +1,96 @@
+{
+  "openapi": "3.1.1",
+  "info": {
+    "title": "DocParse operational data contract",
+    "version": "1.0.0-draft",
+    "description": "Contract proposal only. Push/receipt operations are implemented by DocParse; query/changes operations by the external provider. No listed endpoint is implemented yet. All requests require the signed headers described in README.md and connection/business authorization."
+  },
+  "tags": [{ "name": "DocParse receiver" }, { "name": "External provider" }],
+  "security": [{ "SignedRequest": [] }],
+  "paths": {
+    "/api/integrations/v1/connections/{connectionId}/events": {
+      "parameters": [{ "$ref": "#/components/parameters/ConnectionId" }, { "$ref": "#/components/parameters/KeyId" }, { "$ref": "#/components/parameters/Timestamp" }, { "$ref": "#/components/parameters/RequestId" }],
+      "post": {
+        "operationId": "receiveOperationalEvent", "tags": ["DocParse receiver"],
+        "summary": "Durably accept one absolute upsert or tombstone",
+        "description": "Requires operational-data.push. Same event ID and identical original UTF-8 body returns the original receipt. Different body returns 409. Event acceptance is not projection completion. The signed request ID is independent from the durable event ID.",
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "./schema.json#/$defs/PushEvent" } } } },
+        "responses": {
+          "200": { "description": "Duplicate event; original receipt, with its current status", "content": { "application/json": { "schema": { "$ref": "./schema.json#/$defs/Receipt" } } } },
+          "202": { "description": "New event durably accepted", "headers": { "Location": { "description": "Relative URL of the receipt under this connection", "schema": { "type": "string" } } }, "content": { "application/json": { "schema": { "$ref": "./schema.json#/$defs/Receipt" } } } },
+          "400": { "$ref": "#/components/responses/Problem" }, "401": { "$ref": "#/components/responses/Problem" },
+          "403": { "$ref": "#/components/responses/Problem" }, "404": { "$ref": "#/components/responses/Problem" },
+          "409": { "$ref": "#/components/responses/Problem" }, "413": { "$ref": "#/components/responses/Problem" },
+          "415": { "$ref": "#/components/responses/Problem" }, "429": { "$ref": "#/components/responses/Problem" }, "503": { "$ref": "#/components/responses/Problem" }
+        }
+      }
+    },
+    "/api/integrations/v1/connections/{connectionId}/receipts/{receiptId}": {
+      "parameters": [{ "$ref": "#/components/parameters/ConnectionId" }, { "$ref": "#/components/parameters/KeyId" }, { "$ref": "#/components/parameters/Timestamp" }, { "$ref": "#/components/parameters/RequestId" }, { "name": "receiptId", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }],
+      "get": {
+        "operationId": "getOperationalReceipt", "tags": ["DocParse receiver"],
+        "summary": "Read an event receipt within the authenticated connection",
+        "description": "Requires operational-data.push. Cross-connection receipts are not found. No document or chat key grants this capability.",
+        "responses": {
+          "200": { "description": "Current receipt", "content": { "application/json": { "schema": { "$ref": "./schema.json#/$defs/Receipt" } } } },
+          "400": { "$ref": "#/components/responses/Problem" }, "401": { "$ref": "#/components/responses/Problem" }, "403": { "$ref": "#/components/responses/Problem" },
+          "404": { "$ref": "#/components/responses/Problem" }, "409": { "$ref": "#/components/responses/Problem" }, "429": { "$ref": "#/components/responses/Problem" }, "503": { "$ref": "#/components/responses/Problem" }
+        }
+      }
+    },
+    "/integrations/v1/operational-data/query": {
+      "parameters": [{ "$ref": "#/components/parameters/KeyId" }, { "$ref": "#/components/parameters/Timestamp" }, { "$ref": "#/components/parameters/RequestId" }],
+      "post": {
+        "operationId": "queryOperationalData", "tags": ["External provider"],
+        "summary": "Read offers without modifying business operations",
+        "description": "Requires catalog.read plus prices.read and/or availability.read for requested fields. Credential scope is bound to sourceBusinessId. Return one result per requested external ID or SKU in request order, or one result for text. Ambiguous SKU/text results never silently pick a presentation. Search is bounded to ten candidates; too many candidates return ambiguous with at most ten, not a claim of exhaustive coverage. Unrequested sensitive fields use unknown/not_requested.",
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "./schema.json#/$defs/QueryRequest" } } } },
+        "responses": {
+          "200": { "description": "Bounded results, including explicit unknown, unavailable or ambiguous data", "content": { "application/json": { "schema": { "$ref": "./schema.json#/$defs/QueryResponse" } } } },
+          "400": { "$ref": "#/components/responses/Problem" }, "401": { "$ref": "#/components/responses/Problem" }, "403": { "$ref": "#/components/responses/Problem" },
+          "409": { "$ref": "#/components/responses/Problem" }, "413": { "$ref": "#/components/responses/Problem" }, "415": { "$ref": "#/components/responses/Problem" },
+          "429": { "$ref": "#/components/responses/Problem" }, "503": { "$ref": "#/components/responses/Problem" }
+        }
+      }
+    },
+    "/integrations/v1/operational-data/changes": {
+      "parameters": [{ "$ref": "#/components/parameters/KeyId" }, { "$ref": "#/components/parameters/Timestamp" }, { "$ref": "#/components/parameters/RequestId" }],
+      "get": {
+        "operationId": "readOperationalChanges", "tags": ["External provider"],
+        "summary": "Read a stable initial snapshot or incremental change page",
+        "description": "Requires catalog.read, prices.read and availability.read. Omit cursor for an initial snapshot. Continue using every returned nextCursor, including after complete=true. Cursors are opaque and bound to the credential's business; they never expand permissions. A complete snapshot has a stable source revision watermark. Cursor expiry is 410 and requires resynchronization; it is not an empty successful feed.",
+        "parameters": [
+          { "name": "sourceBusinessId", "in": "query", "required": true, "schema": { "$ref": "./schema.json#/$defs/Identifier" } },
+          { "name": "cursor", "in": "query", "required": false, "schema": { "type": "string", "minLength": 1, "maxLength": 2048 } },
+          { "name": "pageSize", "in": "query", "required": false, "schema": { "type": "integer", "minimum": 1, "maximum": 100, "default": 100 } }
+        ],
+        "responses": {
+          "200": { "description": "Snapshot or incremental page with a durable resume cursor", "content": { "application/json": { "schema": { "$ref": "./schema.json#/$defs/ChangesPage" } } } },
+          "400": { "$ref": "#/components/responses/Problem" }, "401": { "$ref": "#/components/responses/Problem" }, "403": { "$ref": "#/components/responses/Problem" },
+          "409": { "$ref": "#/components/responses/Problem" }, "410": { "$ref": "#/components/responses/Problem" }, "429": { "$ref": "#/components/responses/Problem" }, "503": { "$ref": "#/components/responses/Problem" }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "SignedRequest": {
+        "type": "apiKey", "in": "header", "name": "X-Fyr-Signature",
+        "description": "HMAC-SHA256 signature. Also requires X-Fyr-Key-Id, X-Fyr-Timestamp and X-Fyr-Request-Id; see README.md for exact canonicalization and replay rules. This is server-to-server authentication, not a user credential."
+      }
+    },
+    "parameters": {
+      "ConnectionId": { "name": "connectionId", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } },
+      "KeyId": { "name": "X-Fyr-Key-Id", "in": "header", "required": true, "schema": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[A-Za-z0-9._-]+$" } },
+      "Timestamp": { "name": "X-Fyr-Timestamp", "in": "header", "required": true, "schema": { "type": "string", "pattern": "^(0|[1-9][0-9]{0,11})$" } },
+      "RequestId": { "name": "X-Fyr-Request-Id", "in": "header", "required": true, "schema": { "type": "string", "format": "uuid", "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" } }
+    },
+    "responses": {
+      "Problem": {
+        "description": "Language-neutral problem code. No provider body, secrets or tenant existence details. Retry-After applies to 429/503 only; see README.md for exact classification.",
+        "headers": { "Retry-After": { "description": "Optional integer seconds, 1 through 3600, on 429 or 503", "schema": { "type": "integer", "minimum": 1, "maximum": 3600 } } },
+        "content": { "application/problem+json": { "schema": { "$ref": "./schema.json#/$defs/Problem" } } }
+      }
+    }
+  }
+}

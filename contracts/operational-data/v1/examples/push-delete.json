@@ -1,0 +1,14 @@
+{
+  "contractVersion": "1",
+  "sourceBusinessId": "business-demo",
+  "eventId": "5699caee-c74b-46ba-b3bd-e263890a2504",
+  "occurredAt": "2026-11-11T02:01:00Z",
+  "change": {
+    "kind": "delete",
+    "tombstone": {
+      "externalId": "offer-coffee-250g",
+      "version": "9007199254740994",
+      "deletedAt": "2026-11-11T02:01:00Z"
+    }
+  }
+}

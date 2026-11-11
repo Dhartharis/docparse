@@ -1,0 +1,37 @@
+name: Validate operational data contract
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'contracts/operational-data/**'
+      - 'tests/operational_contract.py'
+      - 'tests/requirements-contracts.txt'
+      - '.github/workflows/validate-operational-contract.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'contracts/operational-data/**'
+      - 'tests/operational_contract.py'
+      - 'tests/requirements-contracts.txt'
+      - '.github/workflows/validate-operational-contract.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: tests/requirements-contracts.txt
+      - name: Install contract validation dependency
+        run: python -m pip install -r tests/requirements-contracts.txt
+      - name: Validate contract schemas, examples and signing vectors
+        run: python tests/operational_contract.py

@@ -1,0 +1,44 @@
+{
+  "warning": "PUBLIC TEST KEY. Never use in a running application.",
+  "vectors": [
+    {
+      "id": "push-original-body",
+      "testKeyHex": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
+      "method": "POST",
+      "target": "/api/integrations/v1/connections/0aa97514-9d15-4bdd-87e3-7e5526f4d458/events",
+      "keyId": "fixture-key-1",
+      "timestamp": "1794362400",
+      "requestId": "91034b50-b14b-4ab4-8580-000000000001",
+      "bodyUtf8": "{\n  \"contractVersion\": \"1\",\n  \"sourceBusinessId\": \"business-demo\",\n  \"eventId\": \"31ba22a5-48f0-4cb3-aaea-d4cd58eb5927\",\n  \"occurredAt\": \"2026-11-11T02:00:00Z\",\n  \"change\": {\n    \"kind\": \"upsert\",\n    \"offer\": {\n      \"externalId\": \"offer-coffee-250g\",\n      \"productId\": \"product-coffee\",\n      \"sku\": \"COFFEE-250G\",\n      \"name\": \"Ground coffee\",\n      \"presentation\": \"250 g bag\",\n      \"unitCode\": \"bag\",\n      \"version\": \"9007199254740993\",\n      \"updatedAt\": \"2026-11-11T02:00:00Z\",\n      \"active\": true,\n      \"price\": {\n        \"state\": \"known\",\n        \"amount\": \"4.990000\",\n        \"currency\": \"USD\",\n        \"taxTreatment\": \"unspecified\",\n        \"observedAt\": \"2026-11-11T02:00:00Z\",\n        \"validUntil\": \"2026-11-11T02:10:00Z\"\n      },\n      \"availability\": {\n        \"tracking\": \"tracked\",\n        \"available\": { \"state\": \"known\", \"quantity\": \"12\" },\n        \"reserved\": { \"state\": \"unknown\", \"reason\": \"not_provided\" },\n        \"observedAt\": \"2026-11-11T02:00:00Z\",\n        \"validUntil\": \"2026-11-11T02:01:00Z\"\n      }\n    }\n  }\n}\n",
+      "expectedBodySha256": "c7beb254b2d0da3ab5bfa58092c2afe4683f56cece59bae681dcdcf375917d6d",
+      "expectedCanonical": "FYR-OPDATA-V1\nPOST\n/api/integrations/v1/connections/0aa97514-9d15-4bdd-87e3-7e5526f4d458/events\nfixture-key-1\n1794362400\n91034b50-b14b-4ab4-8580-000000000001\nc7beb254b2d0da3ab5bfa58092c2afe4683f56cece59bae681dcdcf375917d6d",
+      "expectedSignature": "v1=4338fd452d562fe33115e5f312f49765009a0ff25192ba012b3d95db03b7158c"
+    },
+    {
+      "id": "changes-escaped-cursor",
+      "testKeyHex": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
+      "method": "GET",
+      "target": "/integrations/v1/operational-data/changes?sourceBusinessId=business-demo&pageSize=100&cursor=a%2Fb%3D",
+      "keyId": "fixture-key-1",
+      "timestamp": "1794362400",
+      "requestId": "91034b50-b14b-4ab4-8580-000000000002",
+      "bodyUtf8": "",
+      "expectedBodySha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "expectedCanonical": "FYR-OPDATA-V1\nGET\n/integrations/v1/operational-data/changes?sourceBusinessId=business-demo&pageSize=100&cursor=a%2Fb%3D\nfixture-key-1\n1794362400\n91034b50-b14b-4ab4-8580-000000000002\ne3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "expectedSignature": "v1=bacb00b656ec620ef9ec42fb390e64f24fba8386e45f4ed9267939d2ec0eb76d"
+    },
+    {
+      "id": "query-utf8",
+      "testKeyHex": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
+      "method": "POST",
+      "target": "/integrations/v1/operational-data/query",
+      "keyId": "fixture-key-1",
+      "timestamp": "1794362400",
+      "requestId": "91034b50-b14b-4ab4-8580-000000000003",
+      "bodyUtf8": "{\"contractVersion\":\"1\",\"sourceBusinessId\":\"business-demo\",\"fields\":[\"catalog\"],\"selector\":{\"text\":\"café\"}}",
+      "expectedBodySha256": "eb91ff6e0b1122abd4fc32b1a37476ca825e19dbe0391e5a62de643a3d6a4de1",
+      "expectedCanonical": "FYR-OPDATA-V1\nPOST\n/integrations/v1/operational-data/query\nfixture-key-1\n1794362400\n91034b50-b14b-4ab4-8580-000000000003\neb91ff6e0b1122abd4fc32b1a37476ca825e19dbe0391e5a62de643a3d6a4de1",
+      "expectedSignature": "v1=4fdcc7f98d35901aa3e287e5d6f7b824eaa97b1e3fb3a414c555b4e2fb7d79b2"
+    }
+  ]
+}

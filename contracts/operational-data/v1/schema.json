@@ -1,0 +1,156 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DocParse operational data v1",
+  "description": "Proposed wire contract. No runtime endpoints are implemented by this schema.",
+  "$defs": {
+    "Identifier": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$" },
+    "Version": { "type": "string", "pattern": "^[1-9][0-9]{0,37}$", "description": "Positive base-10 integer, compared numerically per record. Never parse as a floating-point number." },
+    "Decimal": { "type": "string", "pattern": "^(0|[1-9][0-9]{0,17})(\\.[0-9]{1,6})?$", "description": "Non-negative exact decimal; up to 18 integer and 6 fractional digits. No exponent, sign or grouping separators." },
+    "UtcInstant": { "type": "string", "format": "date-time", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,7})?Z$" },
+    "UnconfirmedReason": { "type": "string", "enum": ["not_provided", "source_unavailable", "not_authorized", "not_requested", "not_tracked"] },
+    "KnownQuantity": {
+      "type": "object", "additionalProperties": false,
+      "required": ["state", "quantity"],
+      "properties": { "state": { "const": "known" }, "quantity": { "$ref": "#/$defs/Decimal" } }
+    },
+    "UnknownQuantity": {
+      "type": "object", "additionalProperties": false,
+      "required": ["state", "reason"],
+      "properties": { "state": { "const": "unknown" }, "reason": { "$ref": "#/$defs/UnconfirmedReason" } }
+    },
+    "Quantity": { "oneOf": [{ "$ref": "#/$defs/KnownQuantity" }, { "$ref": "#/$defs/UnknownQuantity" }] },
+    "KnownPrice": {
+      "type": "object", "additionalProperties": false,
+      "required": ["state", "amount", "currency", "taxTreatment", "observedAt", "validUntil"],
+      "properties": {
+        "state": { "const": "known" }, "amount": { "$ref": "#/$defs/Decimal" },
+        "currency": { "type": "string", "pattern": "^[A-Z]{3}$", "description": "ISO 4217 currency code; providers must validate membership, not just its shape." },
+        "taxTreatment": { "enum": ["inclusive", "exclusive", "unspecified"] },
+        "observedAt": { "$ref": "#/$defs/UtcInstant" }, "validUntil": { "$ref": "#/$defs/UtcInstant" }
+      }
+    },
+    "UnknownPrice": {
+      "type": "object", "additionalProperties": false,
+      "required": ["state", "reason"],
+      "properties": { "state": { "const": "unknown" }, "reason": { "$ref": "#/$defs/UnconfirmedReason" } }
+    },
+    "Price": { "oneOf": [{ "$ref": "#/$defs/KnownPrice" }, { "$ref": "#/$defs/UnknownPrice" }] },
+    "Availability": {
+      "type": "object", "additionalProperties": false,
+      "required": ["tracking", "available", "reserved", "observedAt", "validUntil"],
+      "properties": {
+        "tracking": { "enum": ["tracked", "untracked", "unknown"] },
+        "available": { "$ref": "#/$defs/Quantity" }, "reserved": { "$ref": "#/$defs/Quantity" },
+        "observedAt": { "$ref": "#/$defs/UtcInstant" }, "validUntil": { "$ref": "#/$defs/UtcInstant" }
+      },
+      "allOf": [{
+        "if": { "properties": { "tracking": { "enum": ["untracked", "unknown"] } } },
+        "then": { "properties": { "available": { "$ref": "#/$defs/UnknownQuantity" }, "reserved": { "$ref": "#/$defs/UnknownQuantity" } } }
+      }]
+    },
+    "Offer": {
+      "type": "object", "additionalProperties": false,
+      "required": ["externalId", "productId", "sku", "name", "presentation", "unitCode", "version", "updatedAt", "active", "price", "availability"],
+      "properties": {
+        "externalId": { "$ref": "#/$defs/Identifier" }, "productId": { "$ref": "#/$defs/Identifier" },
+        "sku": { "type": ["string", "null"], "minLength": 1, "maxLength": 128 },
+        "name": { "type": "string", "minLength": 1, "maxLength": 512 },
+        "presentation": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "unitCode": { "type": "string", "minLength": 1, "maxLength": 32, "pattern": "^[A-Za-z][A-Za-z0-9._-]*$" },
+        "version": { "$ref": "#/$defs/Version" }, "updatedAt": { "$ref": "#/$defs/UtcInstant" },
+        "active": { "type": "boolean" }, "price": { "$ref": "#/$defs/Price" }, "availability": { "$ref": "#/$defs/Availability" }
+      }
+    },
+    "Tombstone": {
+      "type": "object", "additionalProperties": false,
+      "required": ["externalId", "version", "deletedAt"],
+      "properties": { "externalId": { "$ref": "#/$defs/Identifier" }, "version": { "$ref": "#/$defs/Version" }, "deletedAt": { "$ref": "#/$defs/UtcInstant" } }
+    },
+    "Upsert": {
+      "type": "object", "additionalProperties": false,
+      "required": ["kind", "offer"],
+      "properties": { "kind": { "const": "upsert" }, "offer": { "$ref": "#/$defs/Offer" } }
+    },
+    "Delete": {
+      "type": "object", "additionalProperties": false,
+      "required": ["kind", "tombstone"],
+      "properties": { "kind": { "const": "delete" }, "tombstone": { "$ref": "#/$defs/Tombstone" } }
+    },
+    "Change": { "oneOf": [{ "$ref": "#/$defs/Upsert" }, { "$ref": "#/$defs/Delete" }] },
+    "PushEvent": {
+      "type": "object", "additionalProperties": false,
+      "required": ["contractVersion", "sourceBusinessId", "eventId", "occurredAt", "change"],
+      "properties": {
+        "contractVersion": { "const": "1" }, "sourceBusinessId": { "$ref": "#/$defs/Identifier" },
+        "eventId": { "type": "string", "format": "uuid" }, "occurredAt": { "$ref": "#/$defs/UtcInstant" },
+        "change": { "$ref": "#/$defs/Change" }
+      }
+    },
+    "Receipt": {
+      "type": "object", "additionalProperties": false,
+      "required": ["receiptId", "eventId", "status", "receivedAt", "errorCode"],
+      "properties": {
+        "receiptId": { "type": "string", "format": "uuid" }, "eventId": { "type": "string", "format": "uuid" },
+        "status": { "enum": ["accepted", "processing", "applied", "ignored_older_version", "failed"] },
+        "receivedAt": { "$ref": "#/$defs/UtcInstant" },
+        "errorCode": { "type": ["string", "null"], "enum": [null, "record_version_conflict", "processing_failed"] }
+      },
+      "allOf": [{ "if": { "properties": { "status": { "const": "failed" } } }, "then": { "properties": { "errorCode": { "type": "string" } } }, "else": { "properties": { "errorCode": { "type": "null" } } } }]
+    },
+    "QueryRequest": {
+      "type": "object", "additionalProperties": false,
+      "required": ["contractVersion", "sourceBusinessId", "fields", "selector"],
+      "properties": {
+        "contractVersion": { "const": "1" }, "sourceBusinessId": { "$ref": "#/$defs/Identifier" },
+        "fields": { "type": "array", "minItems": 1, "maxItems": 3, "uniqueItems": true, "items": { "enum": ["catalog", "price", "availability"] } },
+        "selector": { "oneOf": [
+          { "type": "object", "additionalProperties": false, "required": ["externalIds"], "properties": { "externalIds": { "type": "array", "minItems": 1, "maxItems": 50, "uniqueItems": true, "items": { "$ref": "#/$defs/Identifier" } } } },
+          { "type": "object", "additionalProperties": false, "required": ["skus"], "properties": { "skus": { "type": "array", "minItems": 1, "maxItems": 50, "uniqueItems": true, "items": { "type": "string", "minLength": 1, "maxLength": 128 } } } },
+          { "type": "object", "additionalProperties": false, "required": ["text"], "properties": { "text": { "type": "string", "minLength": 1, "maxLength": 256 } } }
+        ] }
+      }
+    },
+    "QueryResult": {
+      "type": "object", "additionalProperties": false,
+      "required": ["selectorValue", "status", "offers"],
+      "properties": {
+        "selectorValue": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "status": { "enum": ["found", "not_found", "ambiguous", "unavailable"] },
+        "offers": { "type": "array", "maxItems": 10, "items": { "$ref": "#/$defs/Offer" } }
+      },
+      "allOf": [
+        { "if": { "properties": { "status": { "const": "found" } } }, "then": { "properties": { "offers": { "minItems": 1, "maxItems": 1 } } } },
+        { "if": { "properties": { "status": { "const": "ambiguous" } } }, "then": { "properties": { "offers": { "minItems": 2 } } } },
+        { "if": { "properties": { "status": { "enum": ["not_found", "unavailable"] } } }, "then": { "properties": { "offers": { "maxItems": 0 } } } }
+      ]
+    },
+    "QueryResponse": {
+      "type": "object", "additionalProperties": false,
+      "required": ["contractVersion", "sourceBusinessId", "results"],
+      "properties": { "contractVersion": { "const": "1" }, "sourceBusinessId": { "$ref": "#/$defs/Identifier" }, "results": { "type": "array", "minItems": 1, "maxItems": 50, "items": { "$ref": "#/$defs/QueryResult" } } }
+    },
+    "ChangesPage": {
+      "type": "object", "additionalProperties": false,
+      "required": ["contractVersion", "sourceBusinessId", "mode", "snapshotId", "snapshotWatermark", "complete", "nextCursor", "changes"],
+      "properties": {
+        "contractVersion": { "const": "1" }, "sourceBusinessId": { "$ref": "#/$defs/Identifier" }, "mode": { "enum": ["snapshot", "incremental"] },
+        "snapshotId": { "type": ["string", "null"], "minLength": 1, "maxLength": 256 },
+        "snapshotWatermark": { "oneOf": [{ "$ref": "#/$defs/Version" }, { "type": "null" }] },
+        "complete": { "type": "boolean" },
+        "nextCursor": { "type": "string", "minLength": 1, "maxLength": 2048, "description": "Continuation for an incomplete page; incremental resume cursor after a complete page. Never null." },
+        "changes": { "type": "array", "maxItems": 100, "items": { "$ref": "#/$defs/Change" } }
+      },
+      "allOf": [{ "if": { "properties": { "mode": { "const": "snapshot" } } }, "then": { "properties": { "snapshotId": { "type": "string" }, "snapshotWatermark": { "$ref": "#/$defs/Version" }, "changes": { "items": { "$ref": "#/$defs/Upsert" } } } }, "else": { "properties": { "snapshotId": { "type": "null" }, "snapshotWatermark": { "type": "null" } } } }]
+    },
+    "Problem": {
+      "type": "object", "additionalProperties": false,
+      "required": ["type", "title", "status", "code", "traceId"],
+      "properties": {
+        "type": { "const": "about:blank" }, "title": { "type": "string", "minLength": 1, "maxLength": 200 },
+        "status": { "type": "integer", "enum": [400, 401, 403, 404, 409, 410, 413, 415, 429, 503] },
+        "code": { "enum": ["validation", "invalid_credentials", "insufficient_scope", "not_found", "event_conflict", "record_version_conflict", "request_replayed", "cursor_expired", "payload_too_large", "unsupported_media_type", "rate_limited", "source_unavailable"] },
+        "traceId": { "type": "string", "minLength": 1, "maxLength": 128 }
+      }
+    }
+  }
+}
