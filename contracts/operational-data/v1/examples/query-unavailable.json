@@ -1,0 +1,8 @@
+{
+  "contractVersion": "1",
+  "sourceBusinessId": "business-demo",
+  "results": [
+    { "selectorValue": "COFFEE-250G", "status": "unavailable", "offers": [] },
+    { "selectorValue": "UNKNOWN-SKU", "status": "not_found", "offers": [] }
+  ]
+}

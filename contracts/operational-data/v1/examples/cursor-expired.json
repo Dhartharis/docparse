@@ -1,0 +1,7 @@
+{
+  "type": "about:blank",
+  "title": "The synchronization cursor has expired.",
+  "status": 410,
+  "code": "cursor_expired",
+  "traceId": "demo-trace-001"
+}

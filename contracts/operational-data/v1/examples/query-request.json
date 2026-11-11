@@ -1,0 +1,6 @@
+{
+  "contractVersion": "1",
+  "sourceBusinessId": "business-demo",
+  "fields": ["catalog", "price", "availability"],
+  "selector": { "skus": ["COFFEE-250G", "UNKNOWN-SKU"] }
+}

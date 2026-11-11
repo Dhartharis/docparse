@@ -1,0 +1,2 @@
+# Contract checks only; no application/runtime dependency.
+jsonschema==4.26.0

@@ -1,0 +1,84 @@
+{
+  "status": "Lifecycle obligations for future runtime conformance tests; not exercised by the schema-only checker.",
+  "clock": "2026-11-11T02:00:30Z",
+  "cases": [
+    {
+      "id": "freshly-signed-event-retry",
+      "given": "The upsert example was accepted and has a durable receipt.",
+      "when": "Send identical original event bytes with a new signed request ID.",
+      "expected": "HTTP 200, the same receipt ID, no second projection write or credit charge."
+    },
+    {
+      "id": "signed-request-replay",
+      "given": "A valid request ID has been atomically accepted and is still in its timestamp acceptance window.",
+      "when": "Replay the same signed request, including while the original processing lease is active.",
+      "expected": "HTTP 409 request_replayed; no second work item."
+    },
+    {
+      "id": "event-identity-content-conflict",
+      "given": "The upsert example's event ID already exists.",
+      "when": "Re-sign an event with that event ID but a changed amount or even different original JSON whitespace.",
+      "expected": "HTTP 409 event_conflict; preserve the original receipt/body."
+    },
+    {
+      "id": "delete-prevents-delayed-resurrection",
+      "given": "Apply the upsert example, then the delete example with its higher revision.",
+      "when": "A different event ID carries the older upsert after deletion.",
+      "expected": "Accept the event once, finish its receipt as ignored_older_version, and keep the record deleted."
+    },
+    {
+      "id": "equal-revision-conflict",
+      "given": "The upsert example is applied.",
+      "when": "Another event ID changes the offer amount but retains the same source revision.",
+      "expected": "Receipt fails with record_version_conflict; no overwrite and no retry as a transient error."
+    },
+    {
+      "id": "cross-business-boundary",
+      "given": "The credential is bound to business-demo and connection A.",
+      "when": "Request another sourceBusinessId, a receipt from connection B, or request fields outside the credential's scopes.",
+      "expected": "Reject business/scope mismatch with 403 and out-of-scope receipt lookup with 404; never read or write the other business."
+    },
+    {
+      "id": "independent-field-expiry",
+      "given": "Use the upsert example, price maximum age 600 seconds and availability maximum age 60 seconds, with fallback enabled.",
+      "when": "At 02:01:00Z a live lookup fails.",
+      "expected": "Price remains usable until 02:10:00Z; availability is stale exactly at 02:01:00Z. Do not infer stock from the price or a document."
+    },
+    {
+      "id": "unknown-is-not-zero",
+      "given": "An offer has known available quantity 0, unknown reserved quantity, and unknown price.",
+      "when": "The agent answers a permitted availability/price question with fresh evidence.",
+      "expected": "Report zero available; do not subtract unknown reservations or turn unknown price into a free product."
+    },
+    {
+      "id": "snapshot-preserves-concurrent-update",
+      "given": "A stable snapshot at watermark 100 omits offer A; a concurrent Push applies A at revision 101.",
+      "when": "Complete the snapshot and reconcile absence.",
+      "expected": "Preserve A at 101. Remove only absent records at or below 100; reject later delayed resurrection at or below the completed floor."
+    },
+    {
+      "id": "snapshot-and-cursor-crash-recovery",
+      "given": "A page was fetched but its projection/cursor transaction did not commit before restart.",
+      "when": "Resume scheduled Pull.",
+      "expected": "Replay that page safely. Do not advance the cursor without its projection or delete absent records before the final snapshot page."
+    },
+    {
+      "id": "expired-cursor-is-not-empty-feed",
+      "given": "An incremental cursor is no longer supported by the provider.",
+      "when": "Request changes with that cursor.",
+      "expected": "HTTP 410 cursor_expired and controlled full resync; no false successful empty feed or early deletion."
+    },
+    {
+      "id": "durable-bounded-retry",
+      "given": "A background operation repeatedly receives 503 without Retry-After; controlled clock starts at t=0.",
+      "when": "Attempt the operation and restart the worker between retries.",
+      "expected": "Attempt at t=0,10,40,160,460 seconds, then terminal failure after attempt five; no sixth attempt. A permanent 403 stops after one attempt."
+    },
+    {
+      "id": "revocation-overrides-fresh-cache",
+      "given": "A connection has fresh projected offers and bot grants.",
+      "when": "The administrator disconnects it or removes the bot's authorization.",
+      "expected": "Immediately exclude it from new tool calls and cached answers regardless of data freshness or valid old credentials."
+    }
+  ]
+}
