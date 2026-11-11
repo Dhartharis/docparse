@@ -1,0 +1,20 @@
+{
+  "invitation.subject": "Invitación a DocParse",
+  "invitation.title": "Tu espacio de trabajo está listo",
+  "invitation.text": "Te invitaron a {organization}. Elige tus propias credenciales o inicia sesión si ya tienes cuenta.",
+  "invitation.action": "Aceptar invitación",
+  "invitation.code": "Código de invitación: {token}",
+  "confirmation.subject": "Confirma tu correo de DocParse",
+  "confirmation.title": "Un paso antes de comenzar",
+  "confirmation.text": "Confirma que este correo te pertenece para acceder a tu espacio de trabajo.",
+  "confirmation.action": "Confirmar correo",
+  "reset.subject": "Restablece tu contraseña de DocParse",
+  "reset.title": "Elige una contraseña nueva",
+  "reset.text": "Usa este código en DocParse para restablecer tu contraseña. Si no solicitaste el cambio, puedes ignorar este correo.",
+  "reset.code": "Código de recuperación: {code}",
+  "footer": "DocParse · Fyr Studio",
+  "reset_link.subject": "Restablece tu contraseña de DocParse",
+  "reset_link.title": "Elige una contraseña nueva",
+  "reset_link.text": "Abre este enlace de DocParse para elegir una contraseña nueva.",
+  "reset_link.action": "Restablecer contraseña"
+}

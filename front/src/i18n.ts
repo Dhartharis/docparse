@@ -10,6 +10,7 @@ import portalVi from "../localization/fyr-portal/vi.json";
 export type MessageKey =
   keyof typeof en.strings | keyof typeof portalEn.strings;
 export type Language = "en" | "es" | "vi";
+export type Translate = (key: MessageKey, params?: Record<string, string | number>) => string;
 type Product = "docparse" | "fyr-portal";
 type LocalePack = {
   locale: string;
@@ -183,6 +184,7 @@ export function useLocalization() {
   }
 
   useEffect(() => {
+    if(import.meta.env.VITE_LOCALIZATION_REMOTE === "false") return;
     const controller = new AbortController();
     const current = new Map<Product, LocalePack>(
       Object.entries(readCatalogs(language)) as [Product, LocalePack][],
@@ -256,4 +258,11 @@ export function useLocalization() {
     );
   };
   return { language, setLanguage, t };
+}
+
+export function bundledTranslator(language: Language): Translate {
+  return (key, params = {}) => {
+    const text = bundled.docparse[language].strings[key] ?? bundled.docparse.en.strings[key] ?? key;
+    return text.replace(/\{([A-Za-z][A-Za-z0-9_]*)\}/g, (match, name: string) => String(params[name] ?? match));
+  };
 }
