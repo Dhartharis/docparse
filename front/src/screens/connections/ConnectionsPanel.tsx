@@ -5,6 +5,7 @@ import { ApiError } from "../../services/api";
 import { createConnection, disconnectConnection, listConnections, rotatePushKey, savePullKey, updateConnection } from "../../services/connections";
 import type { ConnectionDefinition, ConnectionList, SourceConnection } from "../../services/connections";
 import ConnectionEditor from "./ConnectionEditor";
+import ReceivedRecords from "./ReceivedRecords";
 
 type Issued = { connectionId: string; keyId: string; secret: string };
 type Editor = { kind: "new" } | { kind: "settings" | "pull"; connection: SourceConnection };
@@ -19,6 +20,7 @@ export default function ConnectionsPanel({ organizationId, language, t, onBusyCh
   const [confirmation, setConfirmation] = useState<Confirmation | null>(null);
   const [issued, setIssued] = useState<Issued | null>(null);
   const [copied, setCopied] = useState(false);
+  const [recordsId, setRecordsId] = useState<string | null>(null);
   const controller = useRef<AbortController | null>(null);
   const secretField = useRef<HTMLTextAreaElement | null>(null);
   const inFlight = useRef(false);
@@ -74,7 +76,7 @@ export default function ConnectionsPanel({ organizationId, language, t, onBusyCh
     await act(async signal => {
       if (choice.kind === "disconnect") {
         await disconnectConnection(organizationId, choice.connection, signal);
-        if (!signal.aborted) setIssued(previous => previous?.connectionId === choice.connection.id ? null : previous);
+        if (!signal.aborted) { setIssued(previous => previous?.connectionId === choice.connection.id ? null : previous); setRecordsId(null); }
       } else {
         const value = await rotatePushKey(organizationId, choice.connection, days, signal);
         if (!signal.aborted && value.connection.pushKey) setIssued({ connectionId: value.connection.id, keyId: value.connection.pushKey.keyId, secret: value.secretHex });
@@ -143,11 +145,13 @@ export default function ConnectionsPanel({ organizationId, language, t, onBusyCh
       <ul className="connection-modes">{connection.push && <li>{t("connections.push")}</li>}{connection.pullLive && <li>{t("connections.live")}</li>}{connection.pullScheduled && <li>{t("connections.scheduled")}</li>}</ul>
       {connection.pushKey && <p className="panel-note">{t("connections.expires", { date: new Intl.DateTimeFormat(language, { dateStyle: "medium", timeStyle: "short" }).format(new Date(connection.pushKey.expiresAt)) })}</p>}
       {!connection.disconnectedAt && <div className="connection-actions">
+        <button type="button" className="text-button" aria-expanded={recordsId === connection.id} disabled={busy} onClick={() => setRecordsId(previous => previous === connection.id ? null : connection.id)}>{t(recordsId === connection.id ? "records.hide" : "records.show")}</button>
         <button type="button" className="text-button" disabled={busy || Boolean(editor || confirmation)} onClick={() => setEditor({ kind: "settings", connection })}>{t("connections.edit")}</button>
         {connection.push && <button type="button" className="text-button" disabled={busy || Boolean(editor || confirmation)} onClick={() => setConfirmation({ kind: "rotate", connection })}>{t("connections.rotate")}</button>}
         {(connection.pullLive || connection.pullScheduled) && <button type="button" className="text-button" disabled={busy || Boolean(editor || confirmation)} onClick={() => setEditor({ kind: "pull", connection })}>{t("connections.pull_key")}</button>}
         <button type="button" className="text-button" disabled={busy || Boolean(editor || confirmation)} onClick={() => setConfirmation({ kind: "disconnect", connection })}>{t("connections.disconnect")}</button>
       </div>}
+      {!connection.disconnectedAt && recordsId === connection.id && <ReceivedRecords organizationId={organizationId} connectionId={connection.id} language={language} t={t} />}
     </li>)}</ul>
   </section>;
 }

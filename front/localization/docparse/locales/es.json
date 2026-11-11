@@ -1,6 +1,6 @@
 {
   "locale": "es",
-  "version": 3,
+  "version": 4,
   "strings": {
     "login.page_title": "Iniciar sesión · DocParse",
     "language.label": "Idioma",
@@ -384,7 +384,7 @@
     "onboarding.mail_cancelled": "Cancelada",
     "chat.no_sources": "No se encontró información relevante en las bases de conocimiento de este asistente.",
     "connections.title": "Conexiones de datos",
-    "connections.intro": "Configura fuentes de productos, precios y stock. Aún no se han sincronizado datos.",
+    "connections.intro": "Administra los orígenes de datos y las claves de firma. Recibir actualizaciones no concede acceso a los datos desde el chat.",
     "connections.add": "Agregar conexión",
     "connections.edit": "Editar configuración",
     "connections.save": "Guardar conexión",
@@ -425,6 +425,27 @@
     "connections.state_disconnected": "Desconectada",
     "connections.secret_not_repeated": "La conexión ya existe. El secreto original no se vuelve a mostrar; reemplaza la clave de entrada si no la guardaste.",
     "errors.connection_origin": "El dominio de este proveedor no está habilitado. Solicita habilitarlo antes de configurar consultas.",
-    "errors.connection_conflict": "La conexión cambió o la solicitud ya se usó con otra configuración. Actualiza la lista antes de intentarlo de nuevo."
+    "errors.connection_conflict": "La conexión cambió o la solicitud ya se usó con otra configuración. Actualiza la lista antes de intentarlo de nuevo.",
+    "records.show": "Ver datos recibidos",
+    "records.hide": "Ocultar datos recibidos",
+    "records.title": "Precios y stock recibidos",
+    "records.help": "Esta vista es para administradores. La vigencia usa la fecha de observación del origen. El stock disponible ya excluye las reservas. El acceso desde el chat aún no está habilitado.",
+    "records.count": "Se muestran {shown} de {total} ofertas (hasta 100).",
+    "records.empty": "Aún no se han recibido ofertas.",
+    "records.unknown": "Desconocido",
+    "records.inactive": "Oferta inactiva",
+    "records.price": "Precio",
+    "records.tax": "Impuestos",
+    "records.tax_inclusive": "Incluidos",
+    "records.tax_exclusive": "Excluidos",
+    "records.tax_unspecified": "Sin especificar",
+    "records.available": "Stock disponible",
+    "records.reserved": "Stock reservado",
+    "records.price_status": "Vigencia del precio",
+    "records.stock_status": "Vigencia del stock",
+    "records.current": "Dentro del plazo de vigencia",
+    "records.not_current": "Vencido, inactivo o desconocido",
+    "records.price_observed": "Precio observado",
+    "records.stock_observed": "Stock observado"
   }
 }

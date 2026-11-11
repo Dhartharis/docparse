@@ -3,6 +3,7 @@ using DocParse.Modules.Bots;
 using DocParse.Modules.Chat;
 using DocParse.Modules.Usage;
 using DocParse.Modules.Integrations;
+using DocParse.Modules.OperationalData;
 using DocParse.Modules.Knowledge.Infrastructure;
 using Azure.Storage.Blobs;
 using DocParse.Infrastructure.PostgreSQL;
@@ -33,6 +34,17 @@ builder.Services.AddDataProtection().SetApplicationName("DocParse")
 builder.Services.AddRateLimiter(options =>
 {
     options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+    options.OnRejected = async (context, ct) =>
+    {
+        if (!context.HttpContext.Request.Path.StartsWithSegments("/api/integrations/v1/connections")) return;
+        context.HttpContext.Response.Headers.CacheControl = "no-store";
+        context.HttpContext.Response.Headers.RetryAfter = "60";
+        await Results.Problem(statusCode: 429, title: "The operational request could not be completed.",
+            extensions: new Dictionary<string, object?> { ["code"] = "rate_limited", ["traceId"] = context.HttpContext.TraceIdentifier })
+            .ExecuteAsync(context.HttpContext);
+    };
+    options.AddPolicy("operational-hooks", context => RateLimitPartition.GetFixedWindowLimiter(context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+        _ => new FixedWindowRateLimiterOptions { PermitLimit = 600, Window = TimeSpan.FromMinutes(1), QueueLimit = 0 }));
     options.AddPolicy("authentication", context =>
     RateLimitPartition.GetFixedWindowLimiter(context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
         _ => new FixedWindowRateLimiterOptions { PermitLimit = 20, Window = TimeSpan.FromMinutes(1), QueueLimit = 0 }));
@@ -79,6 +91,7 @@ builder.Services.AddBotsModule(builder.Configuration);
 builder.Services.AddChatModule(builder.Configuration);
 builder.Services.AddUsageModule(builder.Configuration);
 builder.Services.AddIntegrationsModule(builder.Configuration, builder.Environment);
+builder.Services.AddOperationalDataModule();
 
 var app = builder.Build();
 
@@ -95,7 +108,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseExceptionHandler();
-app.Use(async(context,next)=>{if(context.Request.ContentType?.Contains("json",StringComparison.OrdinalIgnoreCase)==true){var limit=context.Features.Get<Microsoft.AspNetCore.Http.Features.IHttpMaxRequestBodySizeFeature>();if(limit is {IsReadOnly:false})limit.MaxRequestBodySize=65536;}await next();});
+app.Use(async(context,next)=>{if(context.Request.ContentType?.Contains("json",StringComparison.OrdinalIgnoreCase)==true){var limit=context.Features.Get<Microsoft.AspNetCore.Http.Features.IHttpMaxRequestBodySizeFeature>();if(limit is {IsReadOnly:false})limit.MaxRequestBodySize=context.Request.Path.StartsWithSegments("/api/integrations/v1/connections")?1_048_576:65536;}await next();});
 var widgetAssets = builder.Configuration["Widget:AssetsPath"] ?? Path.GetFullPath(Path.Combine(app.Environment.ContentRootPath, "..", "front", "dist"));
 if (Directory.Exists(widgetAssets)) app.UseStaticFiles(new StaticFileOptions { FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(widgetAssets) });
 app.UseHttpsRedirection();
@@ -108,6 +121,7 @@ app.MapKnowledgeModule();
 app.MapBotsModule();
 app.MapUsageModule();
 app.MapIntegrationsModule();
+app.MapOperationalDataModule();
 app.MapControllers();
 app.MapGet("/health", async (KnowledgeDbContext database, BlobServiceClient blobServiceClient) =>
 {

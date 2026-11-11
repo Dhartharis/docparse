@@ -1,6 +1,6 @@
 {
   "locale": "vi",
-  "version": 3,
+  "version": 4,
   "strings": {
     "login.page_title": "Đăng nhập · DocParse",
     "language.label": "Ngôn ngữ",
@@ -384,7 +384,7 @@
     "onboarding.mail_cancelled": "Đã hủy",
     "chat.no_sources": "Không tìm thấy thông tin phù hợp trong cơ sở kiến thức của trợ lý này.",
     "connections.title": "Kết nối dữ liệu",
-    "connections.intro": "Cấu hình nguồn sản phẩm, giá và tồn kho. Chưa có dữ liệu được đồng bộ.",
+    "connections.intro": "Quản lý nguồn dữ liệu và khóa ký. Việc nhận cập nhật không cấp quyền truy cập dữ liệu từ trò chuyện.",
     "connections.add": "Thêm kết nối",
     "connections.edit": "Sửa cài đặt",
     "connections.save": "Lưu kết nối",
@@ -425,6 +425,27 @@
     "connections.state_disconnected": "Đã ngắt kết nối",
     "connections.secret_not_repeated": "Kết nối đã tồn tại. Bí mật gốc không được hiển thị lại; hãy thay khóa nhận dữ liệu nếu chưa lưu.",
     "errors.connection_origin": "Miền nhà cung cấp này chưa được cho phép. Hãy yêu cầu cho phép miền trước khi cấu hình truy vấn.",
-    "errors.connection_conflict": "Kết nối đã thay đổi hoặc yêu cầu đã được dùng với cài đặt khác. Hãy làm mới danh sách trước khi thử lại."
+    "errors.connection_conflict": "Kết nối đã thay đổi hoặc yêu cầu đã được dùng với cài đặt khác. Hãy làm mới danh sách trước khi thử lại.",
+    "records.show": "Xem dữ liệu đã nhận",
+    "records.hide": "Ẩn dữ liệu đã nhận",
+    "records.title": "Giá và tồn kho đã nhận",
+    "records.help": "Bản xem trước dành cho quản trị viên. Độ mới dựa trên thời điểm quan sát của nguồn. Tồn kho khả dụng đã trừ số lượng đặt giữ. Chưa bật truy cập từ trò chuyện.",
+    "records.count": "Hiển thị {shown} trên {total} mặt hàng (tối đa 100).",
+    "records.empty": "Chưa nhận được mặt hàng nào.",
+    "records.unknown": "Chưa rõ",
+    "records.inactive": "Mặt hàng ngừng hoạt động",
+    "records.price": "Giá",
+    "records.tax": "Thuế",
+    "records.tax_inclusive": "Đã bao gồm",
+    "records.tax_exclusive": "Chưa bao gồm",
+    "records.tax_unspecified": "Chưa xác định",
+    "records.available": "Tồn kho khả dụng",
+    "records.reserved": "Số lượng đặt giữ",
+    "records.price_status": "Độ mới của giá",
+    "records.stock_status": "Độ mới của tồn kho",
+    "records.current": "Trong thời hạn cho phép",
+    "records.not_current": "Hết hạn, ngừng hoạt động hoặc chưa rõ",
+    "records.price_observed": "Thời điểm quan sát giá",
+    "records.stock_observed": "Thời điểm quan sát tồn kho"
   }
 }

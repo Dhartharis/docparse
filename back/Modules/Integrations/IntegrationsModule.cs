@@ -3,6 +3,7 @@ using DocParse.Modules.Integrations.Application;
 using DocParse.Modules.Integrations.Infrastructure;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using System.Text.Json.Serialization;
+using DocParse.Modules.Integrations.Contracts;
 
 namespace DocParse.Modules.Integrations;
 
@@ -22,11 +23,15 @@ public static class IntegrationsModule
         services.AddSingleton(new ProviderPolicy(environment.IsDevelopment(), origins));
         services.TryAddSingleton(TimeProvider.System);
         services.AddScoped<IConnectionStore, ConnectionStore>();
+        services.AddScoped<IConnectionCatalog, ConnectionCatalog>();
+        services.AddScoped<PushInbox>();
+        services.AddHostedService<PushWorker>();
         return services;
     }
 
     public static void MapIntegrationsModule(this WebApplication app)
     {
+        app.MapPushEndpoints();
         var group = app.MapGroup("/api/organizations/{organizationId:guid}/connections").RequireAuthorization();
         group.AddEndpointFilter(async (context, next) =>
         {

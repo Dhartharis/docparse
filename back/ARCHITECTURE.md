@@ -57,9 +57,15 @@ Local rates/plans are simulation, not GPU economics or approved selling prices. 
 
 Integrations is a feature module inside the same deployment, with application validation/store ports and its own schema. Admin-only routes bind every operation to the current organization. Connection/credential composite tenant foreign keys, locked revision checks, a request-ID creation guard and one-current-key indexes protect integrity. Active secrets are protected with the existing persisted Data Protection key ring and scoped purposes; protection/key-ring I/O happens before database transactions. Only new receiving secrets are returned once, never through metadata reads. Replacing/disconnecting erases revoked ciphertext while retaining key metadata.
 
-Configured Push/on-demand/scheduled modes describe the intended integration; no receiver, provider HTTP calls, scheduler, operational projection or bot grants exist in this increment. Pull base URLs require approved origins and strict URI validation, with no embedded credentials/query/fragment. Request-time destination/DNS/redirect protections are still required when Pull is implemented. The source business/destination/modes are immutable; settings and keys use revision checks. Disconnection cannot be undone by an old create replay.
+Configured on-demand/scheduled modes describe the intended integration; provider HTTP calls, the scheduler and bot grants remain future work. Pull base URLs require approved origins and strict URI validation, with no embedded credentials/query/fragment. Request-time destination/DNS/redirect protections are still required when Pull is implemented. The source business/destination/modes are immutable; settings and keys use revision checks. Disconnection cannot be undone by an old create replay.
 
 See [operational connection setup](../docs/operational-connections.md) for local configuration, validation, version/merge considerations and remaining work. No new package, payment change, external business mutation or deployment is introduced.
+
+## Operational Push and projection
+
+Integrations owns signed Push admission, durable request nonces/rate windows, inbox receipts and fenced retry/lease processing. OperationalData owns exact offer/tombstone validation, numeric version ordering and its private projection. Cross-module calls use contracts. A caller-owned `DbTransaction` in the projection contract allows a short local transaction to atomically commit the record and receipt outcome without either module querying the other's tables. No network or key-ring operations run in this transaction.
+
+The Admin preview is tenant scoped and excludes disconnected sources; neither receiving events nor storing projections grants bot/Viewer/public access. Unknown values remain unknown and freshness is based on source observation/expiry plus independent connection limits. JSON remains capped at 64 KiB elsewhere; signed operational requests permit up to 1 MiB. See [Push setup and guarantees](../docs/operational-push.md) for protocol, failure/retry behavior, validation and remaining work.
 
 ## Retention
 

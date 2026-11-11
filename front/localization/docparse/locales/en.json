@@ -1,6 +1,6 @@
 {
   "locale": "en",
-  "version": 3,
+  "version": 4,
   "strings": {
     "login.page_title": "Sign in · DocParse",
     "language.label": "Language",
@@ -384,7 +384,7 @@
     "onboarding.mail_cancelled": "Cancelled",
     "chat.no_sources": "No relevant information was found in this assistant’s knowledge bases.",
     "connections.title": "Data connections",
-    "connections.intro": "Configure product, price and stock sources. No data has been synchronized yet.",
+    "connections.intro": "Manage data sources and signing keys. Receiving updates does not grant chat access to the data.",
     "connections.add": "Add connection",
     "connections.edit": "Edit settings",
     "connections.save": "Save connection",
@@ -425,6 +425,27 @@
     "connections.state_disconnected": "Disconnected",
     "connections.secret_not_repeated": "The connection already exists. Its original secret is not shown again; replace the receiving key if you did not save it.",
     "errors.connection_origin": "This provider domain is not enabled. Request approval for the domain before configuring queries.",
-    "errors.connection_conflict": "The connection changed or the request was already used with different settings. Refresh the list before trying again."
+    "errors.connection_conflict": "The connection changed or the request was already used with different settings. Refresh the list before trying again.",
+    "records.show": "View received data",
+    "records.hide": "Hide received data",
+    "records.title": "Received prices and stock",
+    "records.help": "This preview is for administrators. Freshness uses the source observation time. Available stock already excludes reservations. Chat access is not enabled yet.",
+    "records.count": "Showing {shown} of {total} offers (up to 100).",
+    "records.empty": "No offers received yet.",
+    "records.unknown": "Unknown",
+    "records.inactive": "Inactive offer",
+    "records.price": "Price",
+    "records.tax": "Tax",
+    "records.tax_inclusive": "Included",
+    "records.tax_exclusive": "Excluded",
+    "records.tax_unspecified": "Unspecified",
+    "records.available": "Available stock",
+    "records.reserved": "Reserved stock",
+    "records.price_status": "Price freshness",
+    "records.stock_status": "Stock freshness",
+    "records.current": "Within freshness limits",
+    "records.not_current": "Expired, inactive or unknown",
+    "records.price_observed": "Price observed",
+    "records.stock_observed": "Stock observed"
   }
 }
