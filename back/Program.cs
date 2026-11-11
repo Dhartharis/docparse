@@ -2,6 +2,7 @@ using DocParse.Modules.Knowledge;
 using DocParse.Modules.Bots;
 using DocParse.Modules.Chat;
 using DocParse.Modules.Usage;
+using DocParse.Modules.Integrations;
 using DocParse.Modules.Knowledge.Infrastructure;
 using Azure.Storage.Blobs;
 using DocParse.Infrastructure.PostgreSQL;
@@ -77,6 +78,7 @@ builder.Services.AddKnowledgeModule(builder.Configuration);
 builder.Services.AddBotsModule(builder.Configuration);
 builder.Services.AddChatModule(builder.Configuration);
 builder.Services.AddUsageModule(builder.Configuration);
+builder.Services.AddIntegrationsModule(builder.Configuration, builder.Environment);
 
 var app = builder.Build();
 
@@ -105,6 +107,7 @@ app.MapAccessModule();
 app.MapKnowledgeModule();
 app.MapBotsModule();
 app.MapUsageModule();
+app.MapIntegrationsModule();
 app.MapControllers();
 app.MapGet("/health", async (KnowledgeDbContext database, BlobServiceClient blobServiceClient) =>
 {

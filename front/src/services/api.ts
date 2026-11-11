@@ -33,6 +33,8 @@ export type ErrorCode =
   | "processing"
   | "usage_limit"
   | "usage_unavailable"
+  | "connection_origin"
+  | "connection_conflict"
   | "admin_access"
   | "last_admin"
   | "knowledge_base_linked"
@@ -229,6 +231,10 @@ export async function api<T>(
       if (problem.code === "usage_limit") throw new ApiError("usage_limit");
       if (problem.code === "usage_unavailable") throw new ApiError("usage_unavailable");
     }
+    if (response.status === 400) {
+      const problem = await response.clone().json().catch(() => ({}));
+      if (problem.code === "connection_origin") throw new ApiError("connection_origin");
+    }
     if (response.status === 409) {
       const problem = await response
         .clone()
@@ -238,6 +244,7 @@ export async function api<T>(
       if (problem.code === "document_duplicate") throw new ApiError("document_duplicate");
       if (problem.code === "last_admin") throw new ApiError("last_admin");
       if (problem.code === "admin_access") throw new ApiError("admin_access");
+      if (problem.code === "connection_conflict") throw new ApiError("connection_conflict");
     }
     if (!response.ok) throw failure(response);
     return responseType === "blob"

@@ -9,6 +9,7 @@ import TeamPanel from "./TeamPanel";
 import TrashPanel from "./TrashPanel";
 import CostCalculator from "../usage/CostCalculator";
 import UsagePanel from "../usage/UsagePanel";
+import ConnectionsPanel from "../connections/ConnectionsPanel";
 
 import BotsScreen from "../bots/BotsScreen";
 import Modal from "../../components/Modal";
@@ -36,6 +37,7 @@ export default function WorkspaceScreen({
   const [trashOpen, setTrashOpen] = useState(false);
   const [catalogRevision, setCatalogRevision] = useState(0);
   const [usageOpen, setUsageOpen] = useState(false);
+  const [connectionsOpen, setConnectionsOpen] = useState(false);
   const [calculatorOpen, setCalculatorOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
@@ -226,6 +228,12 @@ export default function WorkspaceScreen({
               >
                 {t("onboarding.create_business")}
               </button>
+              {active?.role === "Admin" && (
+                <button type="button" disabled={busy || featureBusy} onClick={(event) => {
+                  event.currentTarget.closest("details")?.removeAttribute("open");
+                  setConnectionsOpen(true);
+                }}>{t("connections.title")}</button>
+              )}
               {active?.role === "Admin" && (
                 <button
                   type="button"
@@ -462,6 +470,11 @@ export default function WorkspaceScreen({
                     t={t}
                     language={language}
                   />
+                </Modal>
+              )}
+              {connectionsOpen && active.role === "Admin" && (
+                <Modal title={t("connections.title")} closeLabel={t("common.close")} busy={featureBusy} onClose={() => setConnectionsOpen(false)}>
+                  <ConnectionsPanel key={active.id} organizationId={active.id} language={language} t={t} onBusyChange={setFeatureBusy} />
                 </Modal>
               )}
               {calculatorOpen && active.role === "Admin" && (

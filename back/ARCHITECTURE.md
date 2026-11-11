@@ -13,6 +13,7 @@ One .NET 8 deployment organized by functionality. PostgreSQL + pgvector owns str
 | Bots | Configuration, branding, base links, grants, pending access, API keys and embed settings | IBotCatalog, IBotChannelAccess |
 | Chat | Shared retrieval/answer orchestration and provider boundary | HTTP channels |
 | Usage | Fyr Usage adapter, reservation lifecycle, accounting outbox, plan selection and cost scenarios | IUsageMeter |
+| Integrations | Organization/source configuration, optimistic revisions and protected Push/Pull credentials | No provider/data/tool contract exposed yet |
 
 Each module owns its DbContext/schema. Cross-module imports use only Contracts. Application/domain code does not depend on EF, Azure SDKs, upload HTTP or vector types; tests/check_backend_boundaries.py guards this. One project supplies composition; namespaces/checks provide boundaries, not separate assemblies.
 
@@ -51,6 +52,14 @@ Persistent minute limits: 20 messages/key, 10/session, 120/external assistant, 6
 Fyr Usage V2 is the sole credit authority, authenticated ES256 M2M. It receives opaque organization/resource IDs and metrics, never prompts/document content. Immutable cycle/rate snapshots and integer microcredits/nanoUSD avoid floating-point drift. Reservations precede AI; actual Ollama token counts settle idempotently through a durable outbox. Restart recovery does not replay AI. Failures track provider cost without consuming customer allowance; missing quota/service prevents AI admission.
 
 Local rates/plans are simulation, not GPU economics or approved selling prices. Metering supports Ollama; paid adapters fail closed while metering is enabled until their measurements are implemented/validated. Deterministic legacy provider tests disable metering explicitly. Storage/egress/retrieval/processing values in the calculator are manual forecasts, not automatic infrastructure meters. Next-plan selection never resets the current cycle. Fyr Usage V1 contracts remain unchanged.
+
+## Operational connection configuration
+
+Integrations is a feature module inside the same deployment, with application validation/store ports and its own schema. Admin-only routes bind every operation to the current organization. Connection/credential composite tenant foreign keys, locked revision checks, a request-ID creation guard and one-current-key indexes protect integrity. Active secrets are protected with the existing persisted Data Protection key ring and scoped purposes; protection/key-ring I/O happens before database transactions. Only new receiving secrets are returned once, never through metadata reads. Replacing/disconnecting erases revoked ciphertext while retaining key metadata.
+
+Configured Push/on-demand/scheduled modes describe the intended integration; no receiver, provider HTTP calls, scheduler, operational projection or bot grants exist in this increment. Pull base URLs require approved origins and strict URI validation, with no embedded credentials/query/fragment. Request-time destination/DNS/redirect protections are still required when Pull is implemented. The source business/destination/modes are immutable; settings and keys use revision checks. Disconnection cannot be undone by an old create replay.
+
+See [operational connection setup](../docs/operational-connections.md) for local configuration, validation, version/merge considerations and remaining work. No new package, payment change, external business mutation or deployment is introduced.
 
 ## Retention
 
