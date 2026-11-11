@@ -111,8 +111,9 @@ def exercise(h):
     expect(502,http(path+"/query",{"fields":["catalog","price","availability"],"selectorKind":"externalIds","values":["absent"]},a))
     due();wait(lambda:sql(f"SELECT last_version::text FROM operational_data.sync_state WHERE connection_id='{cid}'")=="13","Incremental page not applied")
     assert records()["present"]["offer"]["version"]=="12" and "second" not in records()
+    restart_cursor=sql(f"SELECT protected_cursor FROM integrations.sync_jobs WHERE connection_id='{cid}'")
     h["docker"]("restart",h["CONTAINER"]);h["healthy"]()
-    assert sql(f"SELECT protected_cursor FROM integrations.sync_jobs WHERE connection_id='{cid}'")==encrypted or status()["snapshotCompleted"]
+    assert sql(f"SELECT protected_cursor FROM integrations.sync_jobs WHERE connection_id='{cid}'")==restart_cursor
     # Retry scheduling honors Retry-After without advancing a cursor or losing state across restart.
     mode("down");due()
     wait(lambda:status()["attempts"]==1 and status()["state"]=="waiting" and status()["errorCode"]=="provider_unavailable","Transient failure not persisted")
@@ -146,6 +147,9 @@ def exercise(h):
     sql("DROP TRIGGER fixture_sync_outcome ON integrations.sync_jobs;DROP FUNCTION integrations.fixture_sync_outcome()")
     due();wait(lambda:"atomic" in records(),"Atomic page did not recover")
     mode("resync")
+    last_success=status()["lastSuccessAt"]
+    sql(f"UPDATE integrations.sync_jobs SET state='processing',attempts=1,lease_id='{uuid.uuid4()}',lease_until=now()-interval '1 second' WHERE connection_id='{cid}'")
+    wait(lambda:status()["state"]=="waiting" and status()["attempts"]==0 and status()["lastSuccessAt"]!=last_success,"Expired lease did not resume its cursor")
     sql(f"UPDATE integrations.sync_jobs SET state='processing',attempts=5,lease_id='{uuid.uuid4()}',lease_until=now()-interval '1 second' WHERE connection_id='{cid}'")
     wait(lambda:status()["state"]=="failed" and status()["errorCode"]=="sync_failed","Expired final lease did not terminate")
     # Permanent provider errors stop on the first attempt.
