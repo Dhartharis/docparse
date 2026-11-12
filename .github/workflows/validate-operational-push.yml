@@ -32,6 +32,7 @@ jobs:
       - run: dotnet run --project tests/LiveQueryPolicyTests/LiveQueryPolicyTests.csproj
       - run: dotnet run --project tests/ScheduledSyncPolicyTests/ScheduledSyncPolicyTests.csproj
       - run: dotnet run --project tests/CatalogPolicyTests/CatalogPolicyTests.csproj
+      - run: dotnet run --project tests/GoogleDrivePolicyTests/GoogleDrivePolicyTests.csproj
       - run: npm --prefix front ci
       - run: npm --prefix front run lint
       - run: npm --prefix front run build
@@ -40,7 +41,7 @@ jobs:
       - name: Start disposable test infrastructure
         run: docker compose up -d --wait postgres azurite
       - name: Verify operational connectors and spreadsheet previews with local fixtures
-        run: python3 tests/catalog_integration.py --browser
+        run: python3 tests/google_drive_integration.py --browser
       - name: Stop CI infrastructure
         if: always()
         run: docker compose down

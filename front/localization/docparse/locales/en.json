@@ -1,6 +1,6 @@
 {
   "locale": "en",
-  "version": 7,
+  "version": 8,
   "strings": {
     "login.page_title": "Sign in · DocParse",
     "language.label": "Language",
@@ -539,6 +539,28 @@
     "errors.catalog_file": "Choose a supported .xlsx workbook. The file could not be read safely.",
     "errors.catalog_limit": "The spreadsheet exceeds the supported size, row, column or cell limit.",
     "errors.catalog_headers": "Choose a header row with unique, non-empty names for the mapped columns.",
-    "errors.catalog_mapping": "Review the required columns, presentation, unit and timestamp policy."
+    "errors.catalog_mapping": "Review the required columns, presentation, unit and timestamp policy.",
+    "google.title": "Google Drive",
+    "google.help": "Connect Google, choose a Google Sheets or Excel file, and review its columns. DocParse only reads selected files. Google asks for a file permission that also permits editing.",
+    "google.disabled": "Google Drive is not available in this environment yet.",
+    "google.connect": "Connect Google",
+    "google.choose": "Choose file",
+    "google.connected": "Connected on {date}",
+    "google.reconnect": "Authorization expired. Connect Google again to continue.",
+    "google.disconnect": "Disconnect",
+    "google.disconnect_help": "Disconnect this Google connection from DocParse? Stored credentials will be removed here. You can also manage app permissions in your Google Account.",
+    "google.preview_help": "Preview only: no catalog data or automatic updates are saved yet.",
+    "google.formula_help": "Google Sheets returns calculated formula values. Excel cached formula results require your explicit permission.",
+    "google.callback_return": "Return to the original DocParse window to continue. If that window is no longer available, close this window and connect Google again.",
+    "google.popup": "Allow the Google authorization window to open, then try again.",
+    "errors.google_disabled": "Google Drive is not available yet.",
+    "errors.google_authorization": "Connect Google again. The authorization was cancelled, expired or could not be completed safely.",
+    "errors.google_busy": "This connection is busy. Wait a moment and try again.",
+    "errors.google_permission": "Access to the selected file was denied. Check its Google permissions or connect Google again.",
+    "errors.google_file": "Choose an accessible Google Sheets or .xlsx file from the file picker.",
+    "errors.google_unavailable": "Google is temporarily unavailable. Try again; authorization may need to be renewed.",
+    "errors.google_response": "Google returned an unsupported response. Try again later.",
+    "errors.google_changed": "The file changed while it was being read. Read it again.",
+    "google.account": "Google connection"
   }
 }

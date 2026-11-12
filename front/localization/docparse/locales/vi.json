@@ -1,6 +1,6 @@
 {
   "locale": "vi",
-  "version": 7,
+  "version": 8,
   "strings": {
     "login.page_title": "Đăng nhập · DocParse",
     "language.label": "Ngôn ngữ",
@@ -539,6 +539,28 @@
     "errors.catalog_file": "Chọn sổ .xlsx được hỗ trợ. Không thể đọc tệp an toàn.",
     "errors.catalog_limit": "Bảng tính vượt giới hạn kích thước, hàng, cột hoặc ô được hỗ trợ.",
     "errors.catalog_headers": "Chọn hàng tiêu đề có tên duy nhất và không trống cho các cột ánh xạ.",
-    "errors.catalog_mapping": "Kiểm tra các cột bắt buộc, quy cách, đơn vị và chính sách thời gian."
+    "errors.catalog_mapping": "Kiểm tra các cột bắt buộc, quy cách, đơn vị và chính sách thời gian.",
+    "google.title": "Google Drive",
+    "google.help": "Kết nối Google, chọn tệp Google Sheets hoặc Excel rồi kiểm tra các cột. DocParse chỉ đọc các tệp đã chọn. Google yêu cầu quyền truy cập tệp cũng cho phép chỉnh sửa.",
+    "google.disabled": "Google Drive chưa khả dụng trong môi trường này.",
+    "google.connect": "Kết nối Google",
+    "google.choose": "Chọn tệp",
+    "google.connected": "Đã kết nối vào {date}",
+    "google.reconnect": "Ủy quyền đã hết hạn. Kết nối lại Google để tiếp tục.",
+    "google.disconnect": "Ngắt kết nối",
+    "google.disconnect_help": "Ngắt kết nối Google này khỏi DocParse? Thông tin xác thực đã lưu tại đây sẽ bị xóa. Bạn cũng có thể quản lý quyền ứng dụng trong Tài khoản Google.",
+    "google.preview_help": "Chỉ xem trước: chưa lưu dữ liệu danh mục hoặc cập nhật tự động.",
+    "google.formula_help": "Google Sheets trả về kết quả công thức đã tính. Kết quả công thức lưu trong Excel cần bạn cho phép rõ ràng.",
+    "google.callback_return": "Quay lại cửa sổ DocParse ban đầu để tiếp tục. Nếu cửa sổ đó không còn, hãy đóng cửa sổ này và kết nối lại Google.",
+    "google.popup": "Cho phép mở cửa sổ ủy quyền Google rồi thử lại.",
+    "errors.google_disabled": "Google Drive chưa khả dụng.",
+    "errors.google_authorization": "Kết nối lại Google. Ủy quyền đã bị hủy, hết hạn hoặc không thể hoàn tất an toàn.",
+    "errors.google_busy": "Kết nối này đang bận. Chờ một lát rồi thử lại.",
+    "errors.google_permission": "Quyền truy cập tệp đã bị từ chối. Kiểm tra quyền Google hoặc kết nối lại Google.",
+    "errors.google_file": "Chọn tệp Google Sheets hoặc .xlsx có thể truy cập từ trình chọn tệp.",
+    "errors.google_unavailable": "Google tạm thời không khả dụng. Thử lại; có thể cần ủy quyền lại.",
+    "errors.google_response": "Google trả về phản hồi không được hỗ trợ. Hãy thử lại sau.",
+    "errors.google_changed": "Tệp đã thay đổi trong khi đọc. Hãy đọc lại tệp.",
+    "google.account": "Kết nối Google"
   }
 }

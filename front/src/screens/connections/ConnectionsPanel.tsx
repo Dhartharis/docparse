@@ -8,6 +8,7 @@ import ConnectionEditor from "./ConnectionEditor";
 import ReceivedRecords from "./ReceivedRecords";
 import LiveQueryPanel from "./LiveQueryPanel";
 import SyncPanel from "./SyncPanel";
+import GoogleDrivePanel from "./GoogleDrivePanel";
 import SpreadsheetPreviewPanel from "./SpreadsheetPreviewPanel";
 
 type Issued = { connectionId: string; keyId: string; secret: string };
@@ -16,7 +17,11 @@ type Confirmation = { kind: "rotate" | "disconnect"; connection: SourceConnectio
 
 export default function ConnectionsPanel({ organizationId, language, t, onBusyChange }: { organizationId: string; language: Language; t: Translate; onBusyChange: (busy: boolean) => void }) {
   const [data, setData] = useState<ConnectionList | null>(null);
-  const [busy, setBusy] = useState(false);
+  const [operationBusy, setBusy] = useState(false);
+  const [googleBusy, setGoogleBusy] = useState(false);
+  const busy = operationBusy || googleBusy;
+  useEffect(() => { onBusyChange(busy); }, [busy, onBusyChange]);
+  const [google, setGoogle] = useState(false);
   const [error, setError] = useState<MessageKey | null>(null);
   const [notice, setNotice] = useState<MessageKey | null>(null);
   const [editor, setEditor] = useState<Editor | null>(null);
@@ -122,6 +127,7 @@ export default function ConnectionsPanel({ organizationId, language, t, onBusyCh
       </div>
     </div>}
     <div className="connection-actions">
+      <button type="button" className="secondary-button" disabled={busy || Boolean(editor || confirmation)} onClick={() => setGoogle(value => !value)}>{t("google.title")}</button>
       <button type="button" className="secondary-button" disabled={busy || Boolean(editor || confirmation)} onClick={() => setSpreadsheet(value => !value)}>{t(spreadsheet ? "catalog.hide" : "catalog.show")}</button>
       <button type="button" className="secondary-button" disabled={busy || Boolean(editor || confirmation)} onClick={() => { setEditor({ kind: "new" }); setError(null); }}>{t("connections.add")}</button>
       <button type="button" className="secondary-button" disabled={busy} onClick={() => void act(async signal => { setEditor(null); setConfirmation(null); await load(signal); })}>{t("connections.refresh")}</button>
@@ -145,6 +151,7 @@ export default function ConnectionsPanel({ organizationId, language, t, onBusyCh
       </fieldset>
     </form>}
     {data && data.connections.length === 0 && <p>{t("connections.empty")}</p>}
+    {google && <GoogleDrivePanel organizationId={organizationId} language={language} t={t} onBusyChange={setGoogleBusy} />}
     {spreadsheet && <SpreadsheetPreviewPanel organizationId={organizationId} language={language} t={t} />}
     <ul className="connection-list">{data?.connections.map(connection => <li key={connection.id}>
       <div className="connection-heading"><h3>{connection.settings.name}</h3><span>{t(`connections.state_${connection.state}`)}</span></div>

@@ -45,6 +45,14 @@ export type ErrorCode =
   | "provider_rate"
   | "provider_response"
   | "provider_unavailable"
+  | "google_disabled"
+  | "google_authorization"
+  | "google_busy"
+  | "google_permission"
+  | "google_file"
+  | "google_unavailable"
+  | "google_response"
+  | "google_changed"
   | "catalog_file"
   | "catalog_limit"
   | "catalog_headers"
@@ -238,7 +246,7 @@ export async function api<T>(
     }
     if (!response.ok) {
       const problem = await response.clone().json().catch(() => ({}));
-      const sourceCodes = ["connection_not_ready", "provider_credentials", "provider_scope", "provider_rate", "provider_response", "provider_unavailable", "catalog_file", "catalog_limit", "catalog_headers", "catalog_mapping"] as const;
+      const sourceCodes = ["google_disabled", "google_authorization", "google_busy", "google_permission", "google_file", "google_unavailable", "google_response", "google_changed", "connection_not_ready", "provider_credentials", "provider_scope", "provider_rate", "provider_response", "provider_unavailable", "catalog_file", "catalog_limit", "catalog_headers", "catalog_mapping"] as const;
       const code = sourceCodes.find(value => value === problem.code);
       if (code) throw new ApiError(code);
     }

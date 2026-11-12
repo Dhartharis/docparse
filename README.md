@@ -95,4 +95,4 @@ The frontend workflow deploys only when manually dispatched on `main`. Docker Co
 
 ## Spreadsheet catalog preview
 
-Admin users can inspect a local Excel catalog and review columns without saving or importing it. The shared reader also handles native Sheets responses for the upcoming Google Drive connector. OAuth, Picker and automatic Drive reads remain follow-up work. See [scope, mapping rules and validation](docs/spreadsheet-catalog.md).
+Admin users can inspect a local Excel catalog and review columns without saving or importing it. The shared reader also handles native Sheets responses for the upcoming Google Drive connector. Google authorization, Picker selection and provider-backed preview are now implemented separately; automatic catalog updates remain follow-up work. See [Google connection setup](docs/google-drive-connection.md). See [scope, mapping rules and validation](docs/spreadsheet-catalog.md).

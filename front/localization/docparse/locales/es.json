@@ -1,6 +1,6 @@
 {
   "locale": "es",
-  "version": 7,
+  "version": 8,
   "strings": {
     "login.page_title": "Iniciar sesión · DocParse",
     "language.label": "Idioma",
@@ -539,6 +539,28 @@
     "errors.catalog_file": "Elige un libro .xlsx compatible. No se pudo leer el archivo de forma segura.",
     "errors.catalog_limit": "La hoja excede el límite admitido de tamaño, filas, columnas o celdas.",
     "errors.catalog_headers": "Elige una fila de encabezados con nombres únicos y no vacíos para las columnas asignadas.",
-    "errors.catalog_mapping": "Revisa las columnas requeridas, la presentación, la unidad y el criterio de fecha."
+    "errors.catalog_mapping": "Revisa las columnas requeridas, la presentación, la unidad y el criterio de fecha.",
+    "google.title": "Google Drive",
+    "google.help": "Conecta Google, elige un archivo de Google Sheets o Excel y revisa sus columnas. DocParse solo lee los archivos seleccionados. Google solicita un permiso de archivo que también permite editar.",
+    "google.disabled": "Google Drive todavía no está disponible en este entorno.",
+    "google.connect": "Conectar Google",
+    "google.choose": "Elegir archivo",
+    "google.connected": "Conectado el {date}",
+    "google.reconnect": "La autorización caducó. Vuelve a conectar Google para continuar.",
+    "google.disconnect": "Desconectar",
+    "google.disconnect_help": "¿Desconectar esta conexión de Google de DocParse? Se eliminarán aquí las credenciales guardadas. También puedes administrar los permisos de la app en tu cuenta de Google.",
+    "google.preview_help": "Solo vista previa: todavía no se guardan datos del catálogo ni actualizaciones automáticas.",
+    "google.formula_help": "Google Sheets devuelve los resultados calculados de las fórmulas. Los resultados guardados de Excel requieren tu permiso explícito.",
+    "google.callback_return": "Vuelve a la ventana original de DocParse para continuar. Si ya no está disponible, cierra esta ventana y vuelve a conectar Google.",
+    "google.popup": "Permite que se abra la ventana de autorización de Google y vuelve a intentarlo.",
+    "errors.google_disabled": "Google Drive todavía no está disponible.",
+    "errors.google_authorization": "Vuelve a conectar Google. La autorización se canceló, caducó o no pudo completarse de forma segura.",
+    "errors.google_busy": "Esta conexión está ocupada. Espera un momento y vuelve a intentarlo.",
+    "errors.google_permission": "Se denegó el acceso al archivo. Revisa sus permisos en Google o vuelve a conectar Google.",
+    "errors.google_file": "Elige un archivo accesible de Google Sheets o .xlsx desde el selector.",
+    "errors.google_unavailable": "Google no está disponible temporalmente. Vuelve a intentarlo; puede que debas renovar la autorización.",
+    "errors.google_response": "Google devolvió una respuesta no compatible. Vuelve a intentarlo más tarde.",
+    "errors.google_changed": "El archivo cambió mientras se leía. Vuelve a leerlo.",
+    "google.account": "Conexión de Google"
   }
 }
