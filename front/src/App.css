@@ -1041,3 +1041,5 @@ button:disabled { cursor: wait; opacity: .6; }
 .record-list dd { margin: 0; }
 .record-list dt { font-weight: 600; }
 @media (max-width: 480px) { .record-list dl { grid-template-columns: minmax(0, 1fr); } .record-list dd { margin-bottom: .5rem; } }
+
+.google-drive-file-name { overflow-wrap: anywhere; }

@@ -4,7 +4,7 @@ import type { Translate } from "../../i18n";
 import type { CatalogInspection, CatalogMapping } from "../../services/spreadsheet-catalog";
 import { catalogMappingSuggestions } from "../../services/catalog-mapping-suggestions";
 
-export default function CatalogMappingEditor({ inspection, headerRow, busy, t, onPreview }: { inspection: CatalogInspection; headerRow: number; busy: boolean; t: Translate; onPreview: (mapping: CatalogMapping) => Promise<void> }) {
+export default function CatalogMappingEditor({ inspection, headerRow, busy, t, onPreview, showCachedFormulas = true }: { inspection: CatalogInspection; headerRow: number; busy: boolean; t: Translate; onPreview: (mapping: CatalogMapping) => Promise<void>; showCachedFormulas?: boolean }) {
   const [sameProduct, setSameProduct] = useState(true);
   const suggested = catalogMappingSuggestions(inspection.headers);
   const [freshness, setFreshness] = useState(suggested.observed ? "column" : "");
@@ -38,7 +38,7 @@ export default function CatalogMappingEditor({ inspection, headerRow, busy, t, o
       {(price || stock) && <><label className="field workspace-picker">{t("catalog.freshness")}<select required value={freshness} onChange={event => setFreshness(event.target.value)}><option value="">{t("catalog.choose")}</option><option value="column">{t("catalog.source_time")}</option><option value="read_at">{t("catalog.read_time")}</option></select></label>
         {freshness === "column" && field("observed", "catalog.observed", true)}
         {freshness === "read_at" && <p className="panel-note">{t("catalog.read_time_help")}</p>}</>}
-      <label className="connection-modes"><input name="formulas" type="checkbox" />{t("catalog.formulas")}</label>
+      {showCachedFormulas && <label className="connection-modes"><input name="formulas" type="checkbox" />{t("catalog.formulas")}</label>}
       <button type="submit" className="secondary-button">{t(busy ? "workspace.loading" : "catalog.preview")}</button>
     </fieldset>
   </form>;

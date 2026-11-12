@@ -69,6 +69,13 @@ services:
       OpenAI__ApiKey: ${OPENAI_API_KEY:-}
       Email__Host: mailpit
       Integrations__AllowedProviderOrigins__0: ${INTEGRATION_PROVIDER_ORIGIN:-}
+      GoogleDrive__Enabled: ${GOOGLE_DRIVE_ENABLED:-false}
+      GoogleDrive__ClientId: ${GOOGLE_DRIVE_CLIENT_ID:-}
+      GoogleDrive__ClientSecret: ${GOOGLE_DRIVE_CLIENT_SECRET:-}
+      GoogleDrive__PickerApiKey: ${GOOGLE_DRIVE_PICKER_API_KEY:-}
+      GoogleDrive__ProjectNumber: ${GOOGLE_DRIVE_PROJECT_NUMBER:-}
+      GoogleDrive__RedirectUri: ${GOOGLE_DRIVE_REDIRECT_URI:-http://127.0.0.1:5173/google-drive-callback.html}
+      PublicWeb__BaseUrl: ${PUBLIC_WEB_BASE_URL:-http://127.0.0.1:5173}
       Integrations__ScheduledSyncEnabled: ${INTEGRATION_SCHEDULED_SYNC_ENABLED:-true}
       FyrUsage__Enabled: "true"
       FyrUsage__Endpoint: http://usage:3010/

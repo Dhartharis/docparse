@@ -104,6 +104,10 @@ try:
     shared = ["--network", network, "--add-host", "host.docker.internal:host-gateway", "-e", "ASPNETCORE_ENVIRONMENT=Development", "-e", "PostgreSQL__ConnectionString=" + connection, "-e", "FyrUsage__Enabled=false"]
     if "--live" in sys.argv:
         shared += ["-e", "Integrations__AllowedProviderOrigins__0="+os.environ["DOCPARSE_LIVE_PROVIDER_ORIGIN"]]
+    if "--google" in sys.argv:
+        origin=os.environ["DOCPARSE_GOOGLE_ORIGIN"]
+        shared += ["-e","GoogleDrive__Enabled=true","-e","GoogleDrive__ClientId=fixture-client","-e","GoogleDrive__ClientSecret=fixture-secret","-e","GoogleDrive__PickerApiKey=fixture-key","-e","GoogleDrive__ProjectNumber=12345","-e","GoogleDrive__RedirectUri=http://127.0.0.1:45173/google-drive-callback.html","-e","PublicWeb__BaseUrl=http://127.0.0.1:45173"]
+        for key,path in [("AuthorizationEndpoint","/authorize"),("TokenEndpoint","/token"),("DriveEndpoint","/drive/"),("SheetsEndpoint","/sheets/")]:shared += ["-e","GoogleDrive__"+key+"="+origin+path]
     docker("run", "--rm", *shared, IMAGE, "--migrate")
     for name in ("a", "b"):
         docker("run", "--rm", *shared, "-e", f"LocalAdmin__Email=push-{name}-{SUFFIX}@example.test",
@@ -120,6 +124,10 @@ try:
     b = expect(200,http("/api/auth/login",{"email":"push-b","password":PASSWORD}))["accessToken"]
     org = expect(200,http("/api/organizations/",token=a))[0]["id"]
     root = f"/api/organizations/{org}/connections"
+    if "--google-only" in sys.argv:
+        from google_drive_integration import exercise
+        exercise(globals())
+        sys.exit(0)
     def create(name):
         return expect(200,http(root+"/",{"requestId":str(uuid.uuid4()),"definition":{
             "sourceBusinessId":"business-demo","baseUrl":None,"push":True,"pullLive":False,"pullScheduled":False,"pushKeyDays":90,
@@ -260,6 +268,9 @@ try:
         exercise(globals())
     if "--catalog" in sys.argv:
         from catalog_integration import exercise
+        exercise(globals())
+    if "--google" in sys.argv:
+        from google_drive_integration import exercise
         exercise(globals())
     if "--browser" in sys.argv:
         env = dict(os.environ,VITE_API_PROXY_TARGET=BASE,DOCPARSE_REAL_API=BASE,DOCPARSE_TEST_ADMIN_EMAIL="push-a",DOCPARSE_TEST_ADMIN_PASSWORD=PASSWORD)

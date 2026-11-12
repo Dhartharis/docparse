@@ -88,4 +88,8 @@ Before Azure: production email, HTTPS/origins/proxy trust, secrets/least-privile
 
 ## Spreadsheet catalog preview
 
-Integrations owns bounded read-only XLSX/Sheets parsing and explicit column mapping. Mapping validates through the OperationalData contract and does not write offers or create connections. Admin-only request uploads remain in memory. The frontend editor and parser are reusable for the planned Google OAuth/Picker source; no authenticated Google adapter is delivered here. See [spreadsheet scope and native adapter direction](../docs/spreadsheet-catalog.md).
+Integrations owns bounded read-only XLSX/Sheets parsing and explicit column mapping. Mapping validates through the OperationalData contract and does not write offers or create connections. Admin-only request uploads remain in memory. The frontend editor and parser are reusable for the planned Google OAuth/Picker source; the authenticated Google reader is described in [Google Drive connection](../docs/google-drive-connection.md). See [spreadsheet scope and native adapter direction](../docs/spreadsheet-catalog.md).
+
+## Google Drive authorization
+
+Integrations owns creator/tenant-bound OAuth state, protected tokens and durable refresh leases (migration 022). GoogleDriveSessions orchestrates through provider/account ports; network and Data Protection calls stay outside database transactions. Provider endpoints are fixed in production and file reads are bounded and checked for concurrent version changes. Admin-only selected-file previews reuse common catalog mapping without projection writes. No native source, scheduled job or bot grant is created yet.

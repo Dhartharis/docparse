@@ -4,6 +4,7 @@ import { defineConfig } from "vite";
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
+  build: { rollupOptions: { input: { index: "index.html", googleCallback: "google-drive-callback.html" } } },
   server: {
     watch: { usePolling: process.env.VITE_USE_POLLING === "true" },
     proxy: {

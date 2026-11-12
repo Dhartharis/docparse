@@ -30,6 +30,12 @@ public static class IntegrationsModule
         services.AddScoped<ScheduledSyncStore>();
         if(configuration.GetValue("Integrations:ScheduledSyncEnabled",true))services.AddHostedService<ScheduledSyncWorker>();
         services.AddHostedService<PushWorker>();
+        var google=configuration.GetSection("GoogleDrive").Get<GoogleDriveOptions>()??new();
+        google.Validate(environment.IsDevelopment(),configuration["PublicWeb:BaseUrl"]??"http://127.0.0.1:5173");
+        services.AddSingleton(google);
+        services.AddSingleton<IGoogleDriveProvider,GoogleDriveProvider>();
+        services.AddScoped<IGoogleDriveAccounts,GoogleDriveAccounts>();
+        services.AddScoped<GoogleDriveSessions>();
         return services;
     }
 
@@ -37,6 +43,7 @@ public static class IntegrationsModule
     {
         app.MapPushEndpoints();
         app.MapSpreadsheetEndpoints();
+        app.MapGoogleDriveEndpoints();
         var group = app.MapGroup("/api/organizations/{organizationId:guid}/connections").RequireAuthorization();
         group.AddEndpointFilter(async (context, next) =>
         {
