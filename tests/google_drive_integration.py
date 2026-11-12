@@ -106,7 +106,7 @@ def exercise(h):
     blocked,blocked_code=authorize('blocked');control('reset_block')
     with ThreadPoolExecutor(1)as pool:
         future=pool.submit(http,root+'/complete',{'state':blocked['state'],'code':blocked_code},a)
-        
+
         deadline=time.monotonic()+5
         while not control('counts')['blocked']:
             assert time.monotonic()<deadline;time.sleep(.05)
