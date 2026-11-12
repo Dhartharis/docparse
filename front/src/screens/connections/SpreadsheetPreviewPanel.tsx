@@ -27,7 +27,7 @@ export default function SpreadsheetPreviewPanel({ organizationId, language, t }:
   }
   async function inspect(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    await act(async (selected, signal) => { const result = await inspectSpreadsheet(organizationId, selected, sheet, header, signal); if (!signal.aborted) { setInspection(result); setSheet(result.sheet); } });
+    await act(async (selected, signal) => { const result = await inspectSpreadsheet(organizationId, selected, sheet, header, signal); if (!signal.aborted) { setInspection(result); setSheet(result.sheet); if (result.headersValid === false) setError("errors.catalog_headers"); } });
   }
   async function map(mapping: CatalogMapping) {
     await act(async (selected, signal) => { const result = await previewSpreadsheet(organizationId, selected, sheet, mapping, signal); if (!signal.aborted) setPreview(result); });
@@ -43,7 +43,7 @@ export default function SpreadsheetPreviewPanel({ organizationId, language, t }:
       <label className="field">{t("catalog.header_row")}<input type="number" required min={1} max={50} step={1} value={header} onChange={event => { setHeader(Number(event.target.value)); setInspection(null); setPreview(null); }} /></label>
       <button type="submit" className="secondary-button">{t("catalog.inspect")}</button>
     </fieldset></form>
-    {inspection && inspection.sheet === sheet && <CatalogMappingEditor key={JSON.stringify([sheet, header, inspection.headers])} inspection={inspection} headerRow={header} busy={busy} t={t} onPreview={map} />}
+    {inspection && inspection.headersValid !== false && inspection.sheet === sheet && <CatalogMappingEditor key={JSON.stringify([sheet, header, inspection.headers])} inspection={inspection} headerRow={header} busy={busy} t={t} onPreview={map} />}
     {preview && <div aria-live="polite">
       <p>{t(preview.canImport ? "catalog.valid" : "catalog.invalid", { count: preview.rowCount })}</p>
       {preview.issues.length > 0 && <ul>{preview.issues.map((issue, index) => { const code = issues.find(value => value === issue.code) ?? "invalid_value"; return <li key={index}>{t("catalog.issue", { row: issue.row, field: t(fields[issue.field] ?? "catalog.row"), message: t(`catalog.issue_${code}`) })}</li>; })}</ul>}

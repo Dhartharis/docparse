@@ -29,7 +29,8 @@ internal static class SpreadsheetEndpoints
             var(table,form)=await ReadAsync(context);
             var header=form["headerRow"].ToString();var row=1;
             if(header.Length>0&&!int.TryParse(header,out row))throw new CatalogFailure("catalog_headers");
-            return Results.Ok(SpreadsheetCatalog.Inspect(table,row));
+            try{return Results.Ok(SpreadsheetCatalog.Inspect(table,row));}
+            catch(CatalogFailure error)when(error.Code=="catalog_headers"){return Results.Ok(new CatalogInspection(table.Sheet,table.Sheets,[],0,false));}
         });
         group.MapPost("/preview",async(HttpContext context,IOperationalProjection projection,TimeProvider clock)=>
         {

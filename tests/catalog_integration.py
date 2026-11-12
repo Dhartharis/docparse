@@ -48,6 +48,7 @@ def exercise(h):
             raw=response.read();return response.status,json.loads(raw)if raw else None
     data=workbook();expect(401,upload(root+"/inspect",data));expect(404,upload(root+"/inspect",data,b))
     found=expect(200,upload(root+"/inspect",data,a,{"headerRow":"1"}));assert found["headers"]==["ID","Name","Price","Stock","Updated"] and found["rowCount"]==1
+    missing_header=expect(200,upload(root+"/inspect",data,a,{"headerRow":"50"}));assert not missing_header["headersValid"] and missing_header["sheets"]==["Inventory"]
     mapping={"headerRow":1,"columns":{"externalId":"ID","name":"Name","productId":None,"sku":None,"presentation":None,"unit":None,"price":"Price","currency":None,"available":"Stock","reserved":None,"active":None,"observedAt":"Updated"},
         "defaults":{"productIdFromExternalId":True,"presentation":"One carton","unit":"L","currency":"USD","active":True,"taxTreatment":"inclusive"},"freshnessBasis":"column","allowCachedFormulas":False}
     before=h["sql"]("SELECT count(*) FROM operational_data.records")

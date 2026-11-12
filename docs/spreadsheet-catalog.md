@@ -4,7 +4,7 @@
 
 Admin users can inspect a local `.xlsx` file in **Data connections → Preview spreadsheet**, choose a worksheet/header row, review suggested columns and validate a catalog mapping. This is a preview only: it does not persist files or offers, create a source, grant chatbot access, or connect a Google account. The reader also supports native Google Sheets Values responses for the upcoming authenticated Drive adapter; that path is currently covered by fixtures, not a user-facing Google connection.
 
-The flow is available in English, Spanish and Vietnamese. Suggestions match a unique known header; ambiguous columns require explicit selection. The Admin reviews identifiers, product grouping, presentation, quantity unit, currency, tax treatment and freshness policy. This first editor uses constants for presentation/unit/currency and separate optional product/SKU columns; the mapping contract can also bind those fields per row for a future editor.
+The flow is available in English, Spanish and Vietnamese. A missing or invalid header still returns worksheet choices, allowing correction when the first sheet is a cover page. Suggestions match a unique known header; ambiguous columns require explicit selection. The Admin reviews identifiers, product grouping, presentation, quantity unit, currency, tax treatment and freshness policy. This first editor uses constants for presentation/unit/currency and separate optional product/SKU columns; the mapping contract can also bind those fields per row for a future editor.
 
 ## Parsing and mapping guarantees
 

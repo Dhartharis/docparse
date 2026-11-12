@@ -17,7 +17,7 @@ public sealed record CatalogMapping(int HeaderRow,CatalogColumnMap Columns,Catal
 public sealed record CatalogIssue(int Row,string Field,string Code);
 public sealed record CatalogPreview(string Sheet,IReadOnlyList<string> Sheets,IReadOnlyList<string> Headers,int RowCount,
     IReadOnlyList<OperationalOffer> Offers,IReadOnlyList<CatalogIssue> Issues,bool CanImport);
-public sealed record CatalogInspection(string Sheet,IReadOnlyList<string> Sheets,IReadOnlyList<string> Headers,int RowCount);
+public sealed record CatalogInspection(string Sheet,IReadOnlyList<string> Sheets,IReadOnlyList<string> Headers,int RowCount,bool HeadersValid=true);
 
 public static class SpreadsheetCatalog
 {

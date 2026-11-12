@@ -1,7 +1,7 @@
 import { api } from "./api";
 import type { OperationalRecord } from "./operational-data";
 
-export type CatalogInspection = { sheet: string; sheets: string[]; headers: string[]; rowCount: number };
+export type CatalogInspection = { sheet: string; sheets: string[]; headers: string[]; rowCount: number; headersValid?: boolean };
 export type CatalogMapping = {
   headerRow: number;
   columns: { externalId: string; name: string; productId: string | null; sku: string | null; presentation: string | null; unit: string | null; price: string | null; currency: string | null; available: string | null; reserved: string | null; active: string | null; observedAt: string | null };

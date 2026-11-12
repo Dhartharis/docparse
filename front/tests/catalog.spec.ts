@@ -56,3 +56,24 @@ for (const locale of ["en", "es", "vi"]) {
     }
   });
 }
+
+test("a cover sheet without headers keeps worksheet selection available", async ({ page }) => {
+  await session(page);
+  const t = strings("en");
+  await page.route("**/connections/", route => route.fulfill({ json: { connections: [], providerOriginsConfigured: true } }));
+  await page.route("**/spreadsheet-catalog/inspect", route => {
+    const inventory = route.request().postDataBuffer()!.toString().includes("Inventory");
+    return route.fulfill({ json: { sheet: inventory ? "Inventory" : "Cover", sheets: ["Cover", "Inventory"], headers: inventory ? ["ID", "Name"] : [], rowCount: inventory ? 1 : 0, headersValid: inventory } });
+  });
+  await signIn(page);
+  await page.getByRole("button", { name: t["connections.title"], exact: true }).click();
+  await page.getByRole("button", { name: t["catalog.show"], exact: true }).click();
+  await page.getByLabel(t["catalog.file"], { exact: true }).setInputFiles({ name: "cover.xlsx", mimeType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", buffer: Buffer.from("fixture") });
+  await page.getByRole("button", { name: t["catalog.inspect"], exact: true }).click();
+  await expect(page.getByRole("alert")).toHaveText(t["errors.catalog_headers"]);
+  await expect(page.getByRole("heading", { name: t["catalog.mapping"], exact: true })).toHaveCount(0);
+  await page.getByRole("combobox", { name: t["catalog.sheet"], exact: true }).selectOption("Inventory");
+  await page.getByRole("button", { name: t["catalog.inspect"], exact: true }).click();
+  await expect(page.getByRole("combobox", { name: t["catalog.external_id"], exact: true })).toHaveValue("ID");
+  await expect(page.getByRole("alert")).toHaveCount(0);
+});
