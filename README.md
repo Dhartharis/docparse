@@ -92,3 +92,7 @@ The directory reorganization does not change the domain or publish either applic
 - Translation publication source: `front/localization/docparse`.
 
 The frontend workflow deploys only when manually dispatched on `main`. Docker Compose and the backend Dockerfile build locally without publishing images or provisioning Azure resources.
+
+## Spreadsheet catalog preview
+
+Admin users can inspect a local Excel catalog and review columns without saving or importing it. The shared reader also handles native Sheets responses for the upcoming Google Drive connector. OAuth, Picker and automatic Drive reads remain follow-up work. See [scope, mapping rules and validation](docs/spreadsheet-catalog.md).
