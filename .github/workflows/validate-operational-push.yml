@@ -31,6 +31,7 @@ jobs:
       - run: dotnet run --project tests/PushPolicyTests/PushPolicyTests.csproj
       - run: dotnet run --project tests/LiveQueryPolicyTests/LiveQueryPolicyTests.csproj
       - run: dotnet run --project tests/ScheduledSyncPolicyTests/ScheduledSyncPolicyTests.csproj
+      - run: dotnet run --project tests/CatalogPolicyTests/CatalogPolicyTests.csproj
       - run: npm --prefix front ci
       - run: npm --prefix front run lint
       - run: npm --prefix front run build
@@ -38,8 +39,8 @@ jobs:
       - run: npm --prefix front test
       - name: Start disposable test infrastructure
         run: docker compose up -d --wait postgres azurite
-      - name: Verify Push, live Pull and scheduled synchronization with local fixtures
-        run: python3 tests/scheduled_sync_integration.py --browser
+      - name: Verify operational connectors and spreadsheet previews with local fixtures
+        run: python3 tests/catalog_integration.py --browser
       - name: Stop CI infrastructure
         if: always()
         run: docker compose down

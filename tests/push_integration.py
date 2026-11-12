@@ -258,6 +258,9 @@ try:
     if "--scheduled" in sys.argv:
         from scheduled_sync_integration import exercise
         exercise(globals())
+    if "--catalog" in sys.argv:
+        from catalog_integration import exercise
+        exercise(globals())
     if "--browser" in sys.argv:
         env = dict(os.environ,VITE_API_PROXY_TARGET=BASE,DOCPARSE_REAL_API=BASE,DOCPARSE_TEST_ADMIN_EMAIL="push-a",DOCPARSE_TEST_ADMIN_PASSWORD=PASSWORD)
         subprocess.run(["npm.cmd" if os.name == "nt" else "npm","--prefix","front","test","--","tests/real-push.spec.ts","--workers=1"],cwd=ROOT,env=env,check=True)

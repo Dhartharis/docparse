@@ -8,19 +8,19 @@
       "code": "en",
       "displayName": "English",
       "flagCode": "gb",
-      "version": 6
+      "version": 7
     },
     {
       "code": "es",
       "displayName": "EspaÃ±ol",
       "flagCode": "es",
-      "version": 6
+      "version": 7
     },
     {
       "code": "vi",
       "displayName": "Tiáº¿ng Viá»‡t",
       "flagCode": "vn",
-      "version": 6
+      "version": 7
     }
   ]
 }

@@ -45,6 +45,10 @@ export type ErrorCode =
   | "provider_rate"
   | "provider_response"
   | "provider_unavailable"
+  | "catalog_file"
+  | "catalog_limit"
+  | "catalog_headers"
+  | "catalog_mapping"
   | "server";
 export class ApiError extends Error {
   code: ErrorCode;
@@ -234,7 +238,7 @@ export async function api<T>(
     }
     if (!response.ok) {
       const problem = await response.clone().json().catch(() => ({}));
-      const sourceCodes = ["connection_not_ready", "provider_credentials", "provider_scope", "provider_rate", "provider_response", "provider_unavailable"] as const;
+      const sourceCodes = ["connection_not_ready", "provider_credentials", "provider_scope", "provider_rate", "provider_response", "provider_unavailable", "catalog_file", "catalog_limit", "catalog_headers", "catalog_mapping"] as const;
       const code = sourceCodes.find(value => value === problem.code);
       if (code) throw new ApiError(code);
     }

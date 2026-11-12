@@ -85,3 +85,7 @@ See ../V1_LOCAL.md for commands and observed results. Temporary local databases,
 
 Before Azure: production email, HTTPS/origins/proxy trust, secrets/least-privilege roles, shared encrypted keys, backups, observability, deployment migrations, commercial parameters and cloud costs/quotas. Entra remains future work; WhatsApp is V2. Review EPPlus licensing before commercial Excel export. Local tests do not prove production networking, email delivery, identity or free-tier eligibility.
 
+
+## Spreadsheet catalog preview
+
+Integrations owns bounded read-only XLSX/Sheets parsing and explicit column mapping. Mapping validates through the OperationalData contract and does not write offers or create connections. Admin-only request uploads remain in memory. The frontend editor and parser are reusable for the planned Google OAuth/Picker source; no authenticated Google adapter is delivered here. See [spreadsheet scope and native adapter direction](../docs/spreadsheet-catalog.md).

@@ -8,6 +8,7 @@ import ConnectionEditor from "./ConnectionEditor";
 import ReceivedRecords from "./ReceivedRecords";
 import LiveQueryPanel from "./LiveQueryPanel";
 import SyncPanel from "./SyncPanel";
+import SpreadsheetPreviewPanel from "./SpreadsheetPreviewPanel";
 
 type Issued = { connectionId: string; keyId: string; secret: string };
 type Editor = { kind: "new" } | { kind: "settings" | "pull"; connection: SourceConnection };
@@ -25,6 +26,7 @@ export default function ConnectionsPanel({ organizationId, language, t, onBusyCh
   const [recordsId, setRecordsId] = useState<string | null>(null);
   const [liveId, setLiveId] = useState<string | null>(null);
   const [syncId, setSyncId] = useState<string | null>(null);
+  const [spreadsheet, setSpreadsheet] = useState(false);
   const controller = useRef<AbortController | null>(null);
   const secretField = useRef<HTMLTextAreaElement | null>(null);
   const inFlight = useRef(false);
@@ -120,6 +122,7 @@ export default function ConnectionsPanel({ organizationId, language, t, onBusyCh
       </div>
     </div>}
     <div className="connection-actions">
+      <button type="button" className="secondary-button" disabled={busy || Boolean(editor || confirmation)} onClick={() => setSpreadsheet(value => !value)}>{t(spreadsheet ? "catalog.hide" : "catalog.show")}</button>
       <button type="button" className="secondary-button" disabled={busy || Boolean(editor || confirmation)} onClick={() => { setEditor({ kind: "new" }); setError(null); }}>{t("connections.add")}</button>
       <button type="button" className="secondary-button" disabled={busy} onClick={() => void act(async signal => { setEditor(null); setConfirmation(null); await load(signal); })}>{t("connections.refresh")}</button>
     </div>
@@ -142,6 +145,7 @@ export default function ConnectionsPanel({ organizationId, language, t, onBusyCh
       </fieldset>
     </form>}
     {data && data.connections.length === 0 && <p>{t("connections.empty")}</p>}
+    {spreadsheet && <SpreadsheetPreviewPanel organizationId={organizationId} language={language} t={t} />}
     <ul className="connection-list">{data?.connections.map(connection => <li key={connection.id}>
       <div className="connection-heading"><h3>{connection.settings.name}</h3><span>{t(`connections.state_${connection.state}`)}</span></div>
       <p className="panel-note">{t("connections.source", { business: connection.sourceBusinessId })}</p>

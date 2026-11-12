@@ -36,6 +36,7 @@ public static class IntegrationsModule
     public static void MapIntegrationsModule(this WebApplication app)
     {
         app.MapPushEndpoints();
+        app.MapSpreadsheetEndpoints();
         var group = app.MapGroup("/api/organizations/{organizationId:guid}/connections").RequireAuthorization();
         group.AddEndpointFilter(async (context, next) =>
         {
